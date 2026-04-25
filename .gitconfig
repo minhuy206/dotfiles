@@ -1,3 +1,5 @@
 [user]
 	name = minhuy
 	email = forwork@minhuy.dev
+[init]
+	defaultBranch = main
