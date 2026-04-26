@@ -119,3 +119,10 @@ if (( ${+commands[starship]} )); then
   export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
   eval "$(starship init zsh)"
 fi
+
+if (( ${+commands[tmux]} )) \
+  && [[ -o interactive ]] \
+  && [[ -z "${TMUX:-}" ]] \
+  && [[ "${DISABLE_AUTO_TMUX:-0}" != "1" ]]; then
+  exec tmux new-session -A -s main
+fi
