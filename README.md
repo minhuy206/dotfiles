@@ -45,6 +45,7 @@ cd dotfiles
 ## Managed files
 
 - `.zshrc`
+- `.zshenv`
 - `.zimrc`
 - `.tmux.conf`
 - `.config/zsh/aliases.zsh`

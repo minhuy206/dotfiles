@@ -738,6 +738,7 @@ main() {
   install_packages
   collect_git_config_values
 
+  link_file "$repo_root/.zshenv" "$home_dir/.zshenv"
   link_file "$repo_root/.zshrc" "$home_dir/.zshrc"
   link_file "$repo_root/.zimrc" "$home_dir/.zimrc"
   write_gitconfig
