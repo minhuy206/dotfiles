@@ -5,6 +5,12 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 home_dir="${HOME}"
 allow_remote_install=1
+git_user_name=""
+git_user_email=""
+git_default_branch=""
+git_user_name_from_args=0
+git_user_email_from_args=0
+git_default_branch_from_args=0
 linux_repo_sources_changed=0
 LINUX_REPO_PACKAGES=()
 
@@ -73,6 +79,9 @@ Usage: install.sh [options]
 Options:
   --allow-remote-install   Allow remote script installers (default)
   --no-remote-install      Disable remote script installers
+  --git-name VALUE         Set git user.name in ~/.gitconfig
+  --git-email VALUE        Set git user.email in ~/.gitconfig
+  --git-default-branch VAL Set git init.defaultBranch in ~/.gitconfig
   -h, --help               Show this help message
 EOF
 }
@@ -86,6 +95,57 @@ parse_args() {
       --no-remote-install)
         allow_remote_install=0
         ;;
+      --git-name)
+        shift
+        if [[ -z "${1:-}" ]]; then
+          log "Missing value for --git-name"
+          exit 1
+        fi
+        git_user_name="$1"
+        git_user_name_from_args=1
+        ;;
+      --git-name=*)
+        git_user_name="${1#*=}"
+        if [[ -z "$git_user_name" ]]; then
+          log "Missing value for --git-name"
+          exit 1
+        fi
+        git_user_name_from_args=1
+        ;;
+      --git-email)
+        shift
+        if [[ -z "${1:-}" ]]; then
+          log "Missing value for --git-email"
+          exit 1
+        fi
+        git_user_email="$1"
+        git_user_email_from_args=1
+        ;;
+      --git-email=*)
+        git_user_email="${1#*=}"
+        if [[ -z "$git_user_email" ]]; then
+          log "Missing value for --git-email"
+          exit 1
+        fi
+        git_user_email_from_args=1
+        ;;
+      --git-default-branch)
+        shift
+        if [[ -z "${1:-}" ]]; then
+          log "Missing value for --git-default-branch"
+          exit 1
+        fi
+        git_default_branch="$1"
+        git_default_branch_from_args=1
+        ;;
+      --git-default-branch=*)
+        git_default_branch="${1#*=}"
+        if [[ -z "$git_default_branch" ]]; then
+          log "Missing value for --git-default-branch"
+          exit 1
+        fi
+        git_default_branch_from_args=1
+        ;;
       -h|--help)
         print_usage
         exit 0
@@ -98,6 +158,119 @@ parse_args() {
     esac
     shift
   done
+}
+
+is_interactive_shell() {
+  [[ -t 0 && -t 1 ]]
+}
+
+git_config_current_value() {
+  local key="$1"
+  local value=""
+
+  if have_command git && [[ -f "$home_dir/.gitconfig" ]]; then
+    value="$(git config --file "$home_dir/.gitconfig" --get "$key" 2>/dev/null || true)"
+  fi
+
+  printf '%s' "$value"
+}
+
+prompt_with_default() {
+  local label="$1"
+  local default_value="$2"
+  local input=""
+
+  if [[ -n "$default_value" ]]; then
+    read -r -p "$label [$default_value]: " input
+    if [[ -z "$input" ]]; then
+      input="$default_value"
+    fi
+  else
+    read -r -p "$label: " input
+  fi
+
+  printf '%s' "$input"
+}
+
+ensure_no_newline() {
+  local value="$1"
+  local label="$2"
+
+  if [[ "$value" == *$'\n'* ]]; then
+    log "Invalid $label: value cannot contain newlines."
+    exit 1
+  fi
+}
+
+ensure_valid_git_branch_name() {
+  local branch="$1"
+
+  if [[ "$branch" =~ [[:space:]] ]]; then
+    log "Invalid git default branch: whitespace is not allowed."
+    exit 1
+  fi
+}
+
+collect_git_config_values() {
+  local current_name
+  local current_email
+  local current_branch
+
+  current_name="$(git_config_current_value user.name)"
+  current_email="$(git_config_current_value user.email)"
+  current_branch="$(git_config_current_value init.defaultBranch)"
+
+  if [[ -z "$git_user_name" ]]; then
+    git_user_name="$current_name"
+  fi
+  if [[ -z "$git_user_email" ]]; then
+    git_user_email="$current_email"
+  fi
+  if [[ -z "$git_default_branch" ]]; then
+    git_default_branch="$current_branch"
+  fi
+
+  if [[ -z "$git_user_name" ]]; then
+    git_user_name="${USER:-}"
+  fi
+  if [[ -z "$git_user_email" ]]; then
+    git_user_email="${USER:-user}@localhost"
+  fi
+  if [[ -z "$git_default_branch" ]]; then
+    git_default_branch="main"
+  fi
+
+  if is_interactive_shell; then
+    log ""
+    log "Configure global git identity for ~/.gitconfig"
+    if [[ "$git_user_name_from_args" -eq 0 ]]; then
+      git_user_name="$(prompt_with_default "Git user.name" "$git_user_name")"
+    fi
+    if [[ "$git_user_email_from_args" -eq 0 ]]; then
+      git_user_email="$(prompt_with_default "Git user.email" "$git_user_email")"
+    fi
+    if [[ "$git_default_branch_from_args" -eq 0 ]]; then
+      git_default_branch="$(prompt_with_default "Git init.defaultBranch" "$git_default_branch")"
+    fi
+  fi
+
+  if [[ -z "$git_user_name" ]]; then
+    log "Git user.name cannot be empty."
+    exit 1
+  fi
+  if [[ -z "$git_user_email" ]]; then
+    log "Git user.email cannot be empty."
+    exit 1
+  fi
+  if [[ -z "$git_default_branch" ]]; then
+    log "Git init.defaultBranch cannot be empty."
+    exit 1
+  fi
+
+  ensure_no_newline "$git_user_name" "git user.name"
+  ensure_no_newline "$git_user_email" "git user.email"
+  ensure_no_newline "$git_default_branch" "git init.defaultBranch"
+  ensure_valid_git_branch_name "$git_default_branch"
 }
 
 setup_homebrew_shellenv() {
@@ -345,6 +518,16 @@ install_kitty_linux_script() {
   if [[ -x "$home_dir/.local/kitty.app/bin/kitty" ]]; then
     ln -sf "$home_dir/.local/kitty.app/bin/kitty" "$home_dir/.local/bin/kitty"
     ln -sf "$home_dir/.local/kitty.app/bin/kitten" "$home_dir/.local/bin/kitten"
+
+    mkdir -p "$home_dir/.local/share/applications"
+    cp "$home_dir/.local/kitty.app/share/applications/kitty.desktop" "$home_dir/.local/share/applications/"
+    cp "$home_dir/.local/kitty.app/share/applications/kitty-open.desktop" "$home_dir/.local/share/applications/"
+
+    sed -i "s|Icon=kitty|Icon=$home_dir/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" "$home_dir/.local/share/applications/kitty"*.desktop
+    sed -i "s|Exec=kitty|Exec=$home_dir/.local/kitty.app/bin/kitty|g" "$home_dir/.local/share/applications/kitty"*.desktop
+
+    mkdir -p "$home_dir/.config"
+    echo 'kitty.desktop' > "$home_dir/.config/xdg-terminals.list"
   fi
 }
 
@@ -426,6 +609,7 @@ install_packages() {
 }
 
 set_default_login_shell_linux() {
+  local current_login_shell
   local zsh_path
 
   zsh_path="$(command -v zsh || true)"
@@ -434,7 +618,8 @@ set_default_login_shell_linux() {
     return 1
   fi
 
-  if [[ "${SHELL:-}" == "$zsh_path" ]]; then
+  current_login_shell="$(getent passwd "${USER:-}" 2>/dev/null | awk -F: '{print $7}')"
+  if [[ -n "$current_login_shell" && "$current_login_shell" == "$zsh_path" ]]; then
     log "ok  login shell already set to zsh ($zsh_path)"
     return 0
   fi
@@ -520,13 +705,42 @@ link_file() {
   log "ln  $target -> $source"
 }
 
+write_gitconfig() {
+  local target="$home_dir/.gitconfig"
+  local backup
+  local tmpfile
+
+  mkdir -p "$(dirname "$target")"
+
+  if [[ -L "$target" ]]; then
+    rm "$target"
+  elif [[ -e "$target" ]]; then
+    backup="$(backup_path "$target")"
+    mv "$target" "$backup"
+    log "bak $target -> $backup"
+  fi
+
+  tmpfile="$(mktemp)"
+  cat > "$tmpfile" <<EOF
+[user]
+	name = $git_user_name
+	email = $git_user_email
+[init]
+	defaultBranch = $git_default_branch
+EOF
+
+  mv "$tmpfile" "$target"
+  log "wrt $target"
+}
+
 main() {
   parse_args "$@"
   install_packages
+  collect_git_config_values
 
   link_file "$repo_root/.zshrc" "$home_dir/.zshrc"
   link_file "$repo_root/.zimrc" "$home_dir/.zimrc"
-  link_file "$repo_root/.gitconfig" "$home_dir/.gitconfig"
+  write_gitconfig
   link_file "$repo_root/.tmux.conf" "$home_dir/.tmux.conf"
   link_file "$repo_root/.config/zsh/aliases.zsh" "$home_dir/.config/zsh/aliases.zsh"
   link_file "$repo_root/.config/starship/starship.toml" "$home_dir/.config/starship/starship.toml"
