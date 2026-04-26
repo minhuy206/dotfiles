@@ -425,6 +425,42 @@ install_packages() {
   esac
 }
 
+set_default_login_shell_linux() {
+  local zsh_path
+
+  zsh_path="$(command -v zsh || true)"
+  if [[ -z "$zsh_path" ]]; then
+    log "Skipping login shell update: zsh is not installed."
+    return 1
+  fi
+
+  if [[ "${SHELL:-}" == "$zsh_path" ]]; then
+    log "ok  login shell already set to zsh ($zsh_path)"
+    return 0
+  fi
+
+  if ! have_command chsh; then
+    log "Skipping login shell update: chsh is not available."
+    return 1
+  fi
+
+  if ! grep -Fxq "$zsh_path" /etc/shells 2>/dev/null; then
+    log "Skipping login shell update: $zsh_path is not listed in /etc/shells."
+    log "Add it to /etc/shells, then run: chsh -s \"$zsh_path\""
+    return 1
+  fi
+
+  log "Setting zsh as default login shell (you may be prompted for your password)"
+  if chsh -s "$zsh_path"; then
+    log "ok  login shell updated to zsh ($zsh_path)"
+    return 0
+  fi
+
+  log "Could not update login shell automatically."
+  log "Run manually: chsh -s \"$zsh_path\""
+  return 1
+}
+
 report_linux_tools() {
   local missing=()
   local tool
@@ -501,7 +537,8 @@ main() {
   log "  1. Select FiraCode Nerd Font in your terminal settings."
   log "  2. Start a new shell or run: exec zsh"
   if [[ "$(detect_os)" == linux ]]; then
-    log "  3. To make zsh your login shell, run: chsh -s \"$(command -v zsh)\""
+    set_default_login_shell_linux || true
+    log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""
     log "  4. If Nerd Font glyphs are missing, install FiraCode Nerd Font manually."
     report_linux_tools
   fi
