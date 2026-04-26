@@ -105,23 +105,15 @@ fi
 source ${ZIM_HOME}/init.zsh
 # }}} End configuration added by Zim Framework install
 
+export PATH="$HOME/.local/bin:$PATH"
+
+if [[ -f "$HOME/.config/zsh/aliases.zsh" ]]; then
+  source "$HOME/.config/zsh/aliases.zsh"
+fi
+
 if (( ${+commands[zoxide]} )); then
   eval "$(zoxide init zsh)"
 fi
-
-if (( ${+commands[eza]} )); then
-  alias ls="eza"
-  alias la="eza -a"
-  alias ll="eza -l"
-fi
-
-if (( ${+commands[bat]} )); then
-  alias cat="bat"
-elif (( ${+commands[batcat]} )); then
-  alias cat="batcat"
-fi
-
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 if (( ${+commands[starship]} )); then
   export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
