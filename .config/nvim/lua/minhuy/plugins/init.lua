@@ -1,0 +1,17 @@
+return {
+  require("minhuy.plugins.rose-pine"),
+  require("minhuy.plugins.nvim-treesitter"),
+  require("minhuy.plugins.telescope"),
+  require("minhuy.plugins.which-key"),
+  require("minhuy.plugins.comment"),
+  require("minhuy.plugins.nvim-autopairs"),
+  require("minhuy.plugins.gitsigns"),
+  require("minhuy.plugins.undotree"),
+  require("minhuy.plugins.mason"),
+  require("minhuy.plugins.mason-lspconfig"),
+  require("minhuy.plugins.nvim-lspconfig"),
+  require("minhuy.plugins.nvim-cmp"),
+  require("minhuy.plugins.lualine"),
+  require("minhuy.plugins.outline"),
+  require("minhuy.plugins.indent-blankline"),
+}

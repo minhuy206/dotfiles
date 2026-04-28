@@ -6,7 +6,7 @@ Personal dotfiles for setting up a consistent terminal environment on **macOS** 
 
 - Shell setup: `zsh`, Zim modules, aliases
 - Prompt and navigation: `starship`, `zoxide`
-- Terminal + tooling config: `kitty`, `tmux`, `git`
+- Terminal + tooling config: `kitty`, `tmux`, `git`, `neovim`
 - Package installation:
   - macOS via `Brewfile`
   - Linux via `Aptfile` plus fallback installers for selected tools
@@ -49,6 +49,7 @@ cd dotfiles
 - `.zimrc`
 - `.tmux.conf`
 - `.config/zsh/aliases.zsh`
+- `.config/nvim`
 - `.config/starship/starship.toml`
 - `.config/kitty/kitty.conf`
 

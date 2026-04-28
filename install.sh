@@ -744,6 +744,7 @@ main() {
   write_gitconfig
   link_file "$repo_root/.tmux.conf" "$home_dir/.tmux.conf"
   link_file "$repo_root/.config/zsh/aliases.zsh" "$home_dir/.config/zsh/aliases.zsh"
+  link_file "$repo_root/.config/nvim" "$home_dir/.config/nvim"
   link_file "$repo_root/.config/starship/starship.toml" "$home_dir/.config/starship/starship.toml"
   link_file "$repo_root/.config/kitty/kitty.conf" "$home_dir/.config/kitty/kitty.conf"
 
