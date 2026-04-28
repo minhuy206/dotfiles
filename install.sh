@@ -5,6 +5,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 home_dir="${HOME}"
 allow_remote_install=1
+skip_git_config=0
 git_user_name=""
 git_user_email=""
 git_default_branch=""
@@ -79,6 +80,7 @@ Usage: install.sh [options]
 Options:
   --allow-remote-install   Allow remote script installers (default)
   --no-remote-install      Disable remote script installers
+  --skip-git-config        Skip git identity/default branch prompts and do not write ~/.gitconfig
   --git-name VALUE         Set git user.name in ~/.gitconfig
   --git-email VALUE        Set git user.email in ~/.gitconfig
   --git-default-branch VAL Set git init.defaultBranch in ~/.gitconfig
@@ -94,6 +96,9 @@ parse_args() {
         ;;
       --no-remote-install)
         allow_remote_install=0
+        ;;
+      --skip-git-config)
+        skip_git_config=1
         ;;
       --git-name)
         shift
@@ -158,6 +163,11 @@ parse_args() {
     esac
     shift
   done
+
+  if [[ "$skip_git_config" -eq 1 ]] && [[ "$git_user_name_from_args" -eq 1 || "$git_user_email_from_args" -eq 1 || "$git_default_branch_from_args" -eq 1 ]]; then
+    log "Cannot combine --skip-git-config with --git-name, --git-email, or --git-default-branch."
+    exit 1
+  fi
 }
 
 is_interactive_shell() {
@@ -736,12 +746,16 @@ EOF
 main() {
   parse_args "$@"
   install_packages
-  collect_git_config_values
 
   link_file "$repo_root/.zshenv" "$home_dir/.zshenv"
   link_file "$repo_root/.zshrc" "$home_dir/.zshrc"
   link_file "$repo_root/.zimrc" "$home_dir/.zimrc"
-  write_gitconfig
+  if [[ "$skip_git_config" -eq 1 ]]; then
+    log "Skipping ~/.gitconfig setup (--skip-git-config)."
+  else
+    collect_git_config_values
+    write_gitconfig
+  fi
   link_file "$repo_root/.tmux.conf" "$home_dir/.tmux.conf"
   link_file "$repo_root/.config/zsh/aliases.zsh" "$home_dir/.config/zsh/aliases.zsh"
   link_file "$repo_root/.config/nvim" "$home_dir/.config/nvim"

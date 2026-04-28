@@ -8,10 +8,12 @@ return {
   require("minhuy.plugins.gitsigns"),
   require("minhuy.plugins.undotree"),
   require("minhuy.plugins.mason"),
-  require("minhuy.plugins.mason-lspconfig"),
+  require("minhuy.plugins.conform"),
+  require("minhuy.plugins.nvim-lint"),
   require("minhuy.plugins.nvim-lspconfig"),
   require("minhuy.plugins.nvim-cmp"),
   require("minhuy.plugins.lualine"),
   require("minhuy.plugins.outline"),
   require("minhuy.plugins.indent-blankline"),
+  require("minhuy.plugins.toggleterm"),
 }
