@@ -70,8 +70,8 @@ vim.keymap.set("n", "<leader><leader>", function()
   vim.notify("Neovim config reloaded")
 end)
 
-vim.cmd("packadd nvim.undotree")
 vim.keymap.set("n", "<leader>u", function()
+  vim.cmd("packadd nvim.undotree")
   require("undotree").open({ command = "botright 30vnew" })
 end, { desc = "Open undotree on right" })
 
