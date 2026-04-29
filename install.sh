@@ -660,7 +660,7 @@ report_linux_tools() {
   local missing=()
   local tool
 
-  for tool in zsh tmux gh kitty starship tailscale zoxide; do
+  for tool in zsh tmux gh lazygit kitty starship tailscale zoxide; do
     if ! have_command "$tool"; then
       missing+=("$tool")
     fi

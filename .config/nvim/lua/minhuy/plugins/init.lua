@@ -5,7 +5,7 @@ return {
   require("minhuy.plugins.which-key"),
   require("minhuy.plugins.comment"),
   require("minhuy.plugins.nvim-autopairs"),
-  require("minhuy.plugins.gitsigns"),
+  require("minhuy.plugins.lazygit"),
   require("minhuy.plugins.mason"),
   require("minhuy.plugins.conform"),
   require("minhuy.plugins.nvim-lint"),
