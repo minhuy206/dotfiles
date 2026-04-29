@@ -6,7 +6,6 @@ return {
   require("minhuy.plugins.comment"),
   require("minhuy.plugins.nvim-autopairs"),
   require("minhuy.plugins.gitsigns"),
-  require("minhuy.plugins.undotree"),
   require("minhuy.plugins.mason"),
   require("minhuy.plugins.conform"),
   require("minhuy.plugins.nvim-lint"),
@@ -16,4 +15,6 @@ return {
   require("minhuy.plugins.outline"),
   require("minhuy.plugins.indent-blankline"),
   require("minhuy.plugins.toggleterm"),
+  require("minhuy.plugins.markdown-preview"),
+  require("minhuy.plugins.neo-tree"),
 }
