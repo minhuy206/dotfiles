@@ -597,6 +597,25 @@ install_linux_script_tools_if_missing() {
   fi
 }
 
+install_tclint_with_pipx() {
+  if have_command tclint && have_command tclsp; then
+    log "ok  tclint:tclsp already available"
+    return 0
+  fi
+
+  if ! have_command pipx; then
+    log "Skipping tclint install: pipx is not available."
+    return 0
+  fi
+
+  log "Installing tclint via pipx"
+  if pipx install --force tclint; then
+    log "ok  tclint installed"
+  else
+    log "tclint pipx install failed."
+  fi
+}
+
 install_packages() {
   local os
   os="$(detect_os)"
@@ -660,7 +679,7 @@ report_linux_tools() {
   local missing=()
   local tool
 
-  for tool in zsh tmux gh lazygit kitty starship tailscale zoxide; do
+  for tool in zsh tmux gh lazygit kitty starship tailscale zoxide pipx tclint; do
     if ! have_command "$tool"; then
       missing+=("$tool")
     fi
@@ -746,6 +765,7 @@ EOF
 main() {
   parse_args "$@"
   install_packages
+  install_tclint_with_pipx
 
   link_file "$repo_root/.zshenv" "$home_dir/.zshenv"
   link_file "$repo_root/.zshrc" "$home_dir/.zshrc"

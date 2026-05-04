@@ -3,6 +3,11 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   config = function()
     local lint = require("lint")
+    local has_verible_lint = vim.fn.executable("verible-verilog-lint") == 1
+
+    if not has_verible_lint then
+      return
+    end
 
     lint.linters.verible = {
       cmd = "verible-verilog-lint",

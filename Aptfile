@@ -9,6 +9,7 @@ lazygit
 neovim
 git
 kitty
+pipx
 starship
 tailscale
 tmux
