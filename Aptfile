@@ -1,19 +1,24 @@
+# Aptfile: one package per line (apt package names).
+# Append "# required" on a line so install.sh exits non-zero if that tool is still
+# missing after install. Verification maps neovim -> nvim, batcat -> bat.
+
 batcat
 ca-certificates
 cmake
-curl
+curl          # required
 eza
+# Plain Fira Code (not Nerd-patched). For Starship/Kitty icons like on macOS, install FiraCode Nerd Font from https://www.nerdfonts.com/font-downloads
 fonts-firacode
-gh
+gh            # required
 lazygit
-neovim
-git
-kitty
-pipx
-starship
+neovim        # required
+git           # required
+kitty         # required
+pipx          # required
+starship      # required
 tailscale
-tmux
+tmux          # required
 unzip
 wget
-zoxide
-zsh
+zoxide        # required
+zsh           # required

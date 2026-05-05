@@ -14,6 +14,7 @@ git_user_email_from_args=0
 git_default_branch_from_args=0
 linux_repo_sources_changed=0
 LINUX_REPO_PACKAGES=()
+REQUIRED_TOOLS=()
 
 log() {
   printf '%s\n' "$*"
@@ -21,6 +22,109 @@ log() {
 
 have_command() {
   command -v "$1" >/dev/null 2>&1
+}
+
+add_required_tool() {
+  local name="$1"
+  local existing
+
+  for existing in "${REQUIRED_TOOLS[@]}"; do
+    if [[ "$existing" == "$name" ]]; then
+      return 0
+    fi
+  done
+
+  REQUIRED_TOOLS+=("$name")
+}
+
+merge_core_required_tools() {
+  add_required_tool zsh
+  add_required_tool git
+  add_required_tool tmux
+  add_required_tool nvim
+}
+
+apt_package_to_canonical_tool() {
+  case "$1" in
+    neovim) printf '%s' nvim ;;
+    batcat) printf '%s' bat ;;
+    *) printf '%s' "$1" ;;
+  esac
+}
+
+load_required_tools_from_aptfile() {
+  local aptfile="$repo_root/Aptfile"
+  local raw trimmed package rest first_token token_lc
+
+  if [[ ! -f "$aptfile" ]]; then
+    return 0
+  fi
+
+  while IFS= read -r raw || [[ -n "$raw" ]]; do
+    trimmed="${raw#"${raw%%[![:space:]]*}"}"
+    [[ -z "$trimmed" ]] && continue
+    [[ "$trimmed" == \#* ]] && continue
+
+    package="${raw%%#*}"
+    package="${package#"${package%%[![:space:]]*}"}"
+    package="${package%"${package##*[![:space:]]}"}"
+    [[ -z "$package" ]] && continue
+
+    [[ "$raw" == *"#"* ]] || continue
+
+    rest="${raw#*#}"
+    rest="${rest#"${rest%%[![:space:]]*}"}"
+    read -r first_token _ <<<"$rest"
+    token_lc="$(printf '%s' "$first_token" | tr '[:upper:]' '[:lower:]')"
+    if [[ "$token_lc" != "required" ]]; then
+      continue
+    fi
+
+    add_required_tool "$(apt_package_to_canonical_tool "$package")"
+  done < "$aptfile"
+}
+
+init_required_tools() {
+  REQUIRED_TOOLS=()
+  merge_core_required_tools
+  load_required_tools_from_aptfile
+}
+
+tool_command_present() {
+  local tool="$1"
+
+  case "$tool" in
+    nvim)
+      have_command nvim || have_command neovim
+      ;;
+    bat)
+      have_command bat || have_command batcat
+      ;;
+    tclint)
+      have_command tclint || have_command tclsp
+      ;;
+    *)
+      have_command "$tool"
+      ;;
+  esac
+}
+
+verify_required_tools() {
+  local missing=()
+  local tool
+
+  for tool in "${REQUIRED_TOOLS[@]}"; do
+    if tool_command_present "$tool"; then
+      log "req ok $tool"
+    else
+      missing+=("$tool")
+    fi
+  done
+
+  if ((${#missing[@]})); then
+    log "Required tools missing after install: ${missing[*]}"
+    exit 1
+  fi
 }
 
 SCRIPT_PRIORITY_PACKAGES=(gh eza starship zoxide tailscale kitty)
@@ -346,7 +450,7 @@ sudo_if_needed() {
 
 install_apt_packages() {
   local aptfile="$repo_root/Aptfile"
-  local package
+  local line trimmed package
   local packages=()
   local skipped=()
   local script_priority=()
@@ -364,8 +468,12 @@ install_apt_packages() {
   log "Updating apt package metadata"
   sudo_if_needed apt-get update
 
-  while IFS= read -r package || [[ -n "$package" ]]; do
-    package="${package%%#*}"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    trimmed="${line#"${line%%[![:space:]]*}"}"
+    [[ -z "$trimmed" ]] && continue
+    [[ "$trimmed" == \#* ]] && continue
+
+    package="${line%%#*}"
     package="${package#"${package%%[![:space:]]*}"}"
     package="${package%"${package##*[![:space:]]}"}"
 
@@ -734,36 +842,27 @@ link_file() {
   log "ln  $target -> $source"
 }
 
-write_gitconfig() {
+update_gitconfig() {
   local target="$home_dir/.gitconfig"
-  local backup
-  local tmpfile
 
-  mkdir -p "$(dirname "$target")"
-
-  if [[ -L "$target" ]]; then
-    rm "$target"
-  elif [[ -e "$target" ]]; then
-    backup="$(backup_path "$target")"
-    mv "$target" "$backup"
-    log "bak $target -> $backup"
+  if ! have_command git; then
+    log "Skipping gitconfig update: git not installed."
+    return 0
   fi
 
-  tmpfile="$(mktemp)"
-  cat > "$tmpfile" <<EOF
-[user]
-	name = $git_user_name
-	email = $git_user_email
-[init]
-	defaultBranch = $git_default_branch
-EOF
+  if [[ -L "$target" ]]; then
+    log "warn $target is a symlink; updating in place via git config"
+  fi
 
-  mv "$tmpfile" "$target"
-  log "wrt $target"
+  git config --global user.name "$git_user_name"
+  git config --global user.email "$git_user_email"
+  git config --global init.defaultBranch "$git_default_branch"
+  log "upd $target (user.name, user.email, init.defaultBranch)"
 }
 
 main() {
   parse_args "$@"
+  init_required_tools
   install_packages
   install_tclint_with_pipx
 
@@ -774,7 +873,7 @@ main() {
     log "Skipping ~/.gitconfig setup (--skip-git-config)."
   else
     collect_git_config_values
-    write_gitconfig
+    update_gitconfig
   fi
   link_file "$repo_root/.tmux.conf" "$home_dir/.tmux.conf"
   link_file "$repo_root/.config/zsh/aliases.zsh" "$home_dir/.config/zsh/aliases.zsh"
@@ -793,6 +892,8 @@ main() {
     log "  4. If Nerd Font glyphs are missing, install FiraCode Nerd Font manually."
     report_linux_tools
   fi
+
+  verify_required_tools
 }
 
 main "$@"

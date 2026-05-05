@@ -89,7 +89,6 @@ symbol = ' '
 style = 'fg:#06969A'
 format = '[$symbol]($style) $path'
 detect_files = ['docker-compose.yml', 'docker-compose.yaml', 'Dockerfile']
-detect_extensions = ['Dockerfile']
 
 [jobs]
 symbol = ' '

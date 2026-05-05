@@ -12,4 +12,10 @@ elif (( ${+commands[batcat]} )); then
   alias cat="batcat"
 fi
 
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+# Git helper for this repo cloned to ~/dotfiles (see README). Override path with DOTFILES_DIR.
+# For a bare repo with work-tree $HOME: GIT_DIR=~/.dotfiles GIT_WORK_TREE=$HOME git ...
+if [[ -d "${DOTFILES_DIR:-$HOME/dotfiles}/.git" ]]; then
+  dotfiles() {
+    command git -C "${DOTFILES_DIR:-$HOME/dotfiles}" "$@"
+  }
+fi
