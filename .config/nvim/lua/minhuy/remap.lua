@@ -1,5 +1,13 @@
 vim.g.mapleader = " "
+-- next / prev tab
+vim.keymap.set("n", "<Tab>", ":bnext<CR>")
+vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
+-- close buffer (mini.bufremove)
+vim.keymap.set("n", "<leader>x", function()
+  require("mini.bufremove").delete(0, false)
+end, { desc = "Delete buffer" })
 
+-- Neotree focus
 vim.keymap.set("n", "<leader>o", "<cmd>Neotree focus<cr>")
 -- move line up/down (visual)
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -56,7 +64,7 @@ vim.keymap.set("n", "<leader>ss", [[:.,$s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><L
 vim.keymap.set("v", "<leader>s", [[:s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- make file executable
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- reload config
 vim.keymap.set("n", "<leader><leader>", function()

@@ -12,6 +12,8 @@ return {
   require("minhuy.plugins.nvim-lspconfig"),
   require("minhuy.plugins.nvim-cmp"),
   require("minhuy.plugins.lualine"),
+  require("minhuy.plugins.bufferline"),
+  require("minhuy.plugins.mini-bufremove"),
   require("minhuy.plugins.outline"),
   require("minhuy.plugins.indent-blankline"),
   require("minhuy.plugins.toggleterm"),
