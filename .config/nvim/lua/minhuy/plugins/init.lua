@@ -15,8 +15,7 @@ return {
   require("minhuy.plugins.bufferline"),
   require("minhuy.plugins.mini-bufremove"),
   require("minhuy.plugins.outline"),
-  require("minhuy.plugins.indent-blankline"),
-  require("minhuy.plugins.toggleterm"),
+  require("minhuy.plugins.mini-indentscope"),
   require("minhuy.plugins.markdown-preview"),
   require("minhuy.plugins.neo-tree"),
 }
