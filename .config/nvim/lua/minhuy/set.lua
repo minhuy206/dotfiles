@@ -31,6 +31,8 @@ vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
 vim.opt.updatetime = 50
+vim.opt.timeout = true
+vim.opt.timeoutlen = 300
 vim.opt.isfname:append("@-@")
 
 vim.opt.foldmethod = "expr"
