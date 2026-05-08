@@ -27,3 +27,7 @@ texlive-latex-extra
 texlive-fonts-recommended
 texlive-extra-utils
 zathura
+biber
+xdotool
+ripgrep
+fd-find
