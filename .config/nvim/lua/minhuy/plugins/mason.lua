@@ -9,21 +9,23 @@ return {
       return
     end
 
-    local function ensure_verible()
-      if not registry.has_package("verible") then
-        return
-      end
+    local packages = { "verible", "texlab" }
 
-      local pkg = registry.get_package("verible")
-      if not pkg:is_installed() then
-        pkg:install()
+    local function ensure_packages()
+      for _, name in ipairs(packages) do
+        if registry.has_package(name) then
+          local pkg = registry.get_package(name)
+          if not pkg:is_installed() then
+            pkg:install()
+          end
+        end
       end
     end
 
     if registry.refresh then
-      registry.refresh(ensure_verible)
+      registry.refresh(ensure_packages)
     else
-      ensure_verible()
+      ensure_packages()
     end
   end,
 }

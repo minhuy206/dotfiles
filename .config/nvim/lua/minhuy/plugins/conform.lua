@@ -3,10 +3,14 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   config = function()
     local has_verible_format = vim.fn.executable("verible-verilog-format") == 1
+    local has_latexindent = vim.fn.executable("latexindent") == 1
     local formatters_by_ft = {}
     if has_verible_format then
       formatters_by_ft.systemverilog = { "verible" }
       formatters_by_ft.verilog = { "verible" }
+    end
+    if has_latexindent then
+      formatters_by_ft.tex = { "latexindent" }
     end
 
     require("conform").setup({
@@ -18,6 +22,13 @@ return {
           return {
             lsp_format = "never",
             timeout_ms = 500,
+          }
+        end
+
+        if has_latexindent and filetype == "tex" then
+          return {
+            lsp_format = "never",
+            timeout_ms = 1000,
           }
         end
       end,

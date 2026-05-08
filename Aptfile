@@ -22,3 +22,8 @@ unzip
 wget
 zoxide        # required
 zsh           # required
+latexmk
+texlive-latex-extra
+texlive-fonts-recommended
+texlive-extra-utils
+zathura

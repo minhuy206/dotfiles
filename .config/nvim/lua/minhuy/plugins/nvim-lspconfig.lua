@@ -36,6 +36,15 @@ return {
         vim.lsp.enable("tclint")
       end
 
+      vim.lsp.config("texlab", {
+        cmd = { "texlab" },
+        filetypes = { "tex", "plaintex", "bib" },
+        root_markers = { ".latexmkrc", "latexmkrc", ".git" },
+        single_file_support = true,
+        capabilities = capabilities,
+      })
+      vim.lsp.enable("texlab")
+
       return
     end
 
@@ -76,5 +85,7 @@ return {
         capabilities = capabilities,
       })
     end
+
+    lspconfig.texlab.setup({ capabilities = capabilities })
   end,
 }

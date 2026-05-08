@@ -11,6 +11,8 @@ brew "tmux"
 brew "zoxide"
 
 cask "clipy"
+cask "mactex-no-gui"
+cask "skim"
 cask "claude-code"
 cask "codex"
 cask "gonhanh"

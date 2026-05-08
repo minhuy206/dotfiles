@@ -6,7 +6,7 @@ return {
   config = function()
     local nvim_treesitter = require("nvim-treesitter")
     nvim_treesitter.setup({})
-    nvim_treesitter.install({ "systemverilog", "tcl" })
+    nvim_treesitter.install({ "systemverilog", "tcl", "latex", "bibtex" })
 
     vim.filetype.add({
       extension = {

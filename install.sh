@@ -783,11 +783,29 @@ set_default_login_shell_linux() {
   return 1
 }
 
+configure_skim_synctex() {
+  if ! have_command defaults; then
+    return 0
+  fi
+
+  if ! ls /Applications/Skim.app >/dev/null 2>&1 && ! ls "$home_dir/Applications/Skim.app" >/dev/null 2>&1; then
+    log "Skipping Skim SyncTeX config: Skim.app not found."
+    return 0
+  fi
+
+  log "Configuring Skim inverse search for Neovim (SyncTeX)"
+  defaults write net.sourceforge.skim-app.skim SKTeXEditorPresetKey "Custom"
+  defaults write net.sourceforge.skim-app.skim SKTeXEditorCommand "nvim"
+  defaults write net.sourceforge.skim-app.skim SKTeXEditorArguments \
+    "--headless -c \"VimtexInverseSearch %line '%file'\""
+  log "ok  Skim SyncTeX configured"
+}
+
 report_linux_tools() {
   local missing=()
   local tool
 
-  for tool in zsh tmux gh lazygit kitty starship tailscale zoxide pipx tclint; do
+  for tool in zsh tmux gh lazygit kitty starship tailscale zoxide pipx tclint latexmk zathura; do
     if ! have_command "$tool"; then
       missing+=("$tool")
     fi
@@ -865,6 +883,9 @@ main() {
   init_required_tools
   install_packages
   install_tclint_with_pipx
+  if [[ "$(detect_os)" == macos ]]; then
+    configure_skim_synctex
+  fi
 
   link_file "$repo_root/.zshenv" "$home_dir/.zshenv"
   link_file "$repo_root/.zshrc" "$home_dir/.zshrc"
@@ -886,6 +907,10 @@ main() {
   log "Next steps:"
   log "  1. Select FiraCode Nerd Font in your terminal settings."
   log "  2. Start a new shell or run: exec zsh"
+  log "  3. Open Neovim — Mason will auto-install texlab on first launch."
+  if [[ "$(detect_os)" == macos ]]; then
+    log "  4. Open a .tex file and press <localleader>ll to compile and open Skim."
+  fi
   if [[ "$(detect_os)" == linux ]]; then
     set_default_login_shell_linux || true
     log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""

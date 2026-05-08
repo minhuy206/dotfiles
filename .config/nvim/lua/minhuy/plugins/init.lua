@@ -17,4 +17,5 @@ return {
   require("minhuy.plugins.mini-indentscope"),
   require("minhuy.plugins.markdown-preview"),
   require("minhuy.plugins.neo-tree"),
+  require("minhuy.plugins.vimtex"),
 }
