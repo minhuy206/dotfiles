@@ -28,11 +28,13 @@ add_required_tool() {
   local name="$1"
   local existing
 
-  for existing in "${REQUIRED_TOOLS[@]}"; do
-    if [[ "$existing" == "$name" ]]; then
-      return 0
-    fi
-  done
+  if ((${#REQUIRED_TOOLS[@]})); then
+    for existing in "${REQUIRED_TOOLS[@]}"; do
+      if [[ "$existing" == "$name" ]]; then
+        return 0
+      fi
+    done
+  fi
 
   REQUIRED_TOOLS+=("$name")
 }
@@ -113,13 +115,15 @@ verify_required_tools() {
   local missing=()
   local tool
 
-  for tool in "${REQUIRED_TOOLS[@]}"; do
-    if tool_command_present "$tool"; then
-      log "req ok $tool"
-    else
-      missing+=("$tool")
-    fi
-  done
+  if ((${#REQUIRED_TOOLS[@]})); then
+    for tool in "${REQUIRED_TOOLS[@]}"; do
+      if tool_command_present "$tool"; then
+        log "req ok $tool"
+      else
+        missing+=("$tool")
+      fi
+    done
+  fi
 
   if ((${#missing[@]})); then
     log "Required tools missing after install: ${missing[*]}"
@@ -146,11 +150,13 @@ has_linux_repo_package() {
   local package="$1"
   local existing
 
-  for existing in "${LINUX_REPO_PACKAGES[@]}"; do
-    if [[ "$existing" == "$package" ]]; then
-      return 0
-    fi
-  done
+  if ((${#LINUX_REPO_PACKAGES[@]})); then
+    for existing in "${LINUX_REPO_PACKAGES[@]}"; do
+      if [[ "$existing" == "$package" ]]; then
+        return 0
+      fi
+    done
+  fi
 
   return 1
 }
@@ -509,6 +515,10 @@ install_apt_packages() {
 
 ensure_local_bin_dir() {
   mkdir -p "$home_dir/.local/bin"
+  case ":${PATH}:" in
+    *":$home_dir/.local/bin:"*) ;;
+    *) export PATH="$home_dir/.local/bin:$PATH" ;;
+  esac
 }
 
 install_gh_linux_script() {
@@ -797,7 +807,7 @@ configure_skim_synctex() {
   defaults write net.sourceforge.skim-app.skim SKTeXEditorPresetKey "Custom"
   defaults write net.sourceforge.skim-app.skim SKTeXEditorCommand "nvim"
   defaults write net.sourceforge.skim-app.skim SKTeXEditorArguments \
-    "--headless -c \"VimtexInverseSearch %line '%file'\""
+    -string '--headless -c "VimtexInverseSearch %line '"'"'%file'"'"'"'
   log "ok  Skim SyncTeX configured"
 }
 
