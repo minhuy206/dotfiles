@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Syntax-check the installer without running it:
+Syntax-check all installer files without running them:
 ```bash
-bash -n install.sh
+bash -n install.sh && for f in lib/*.sh; do bash -n "$f"; done
 ```
 
 Run the installer (interactive, prompts for git config):
@@ -17,24 +17,28 @@ Run the installer (interactive, prompts for git config):
 ./install.sh --git-name "Name" --git-email "email" --git-default-branch main
 ```
 
-Validate a zsh config file:
+Validate zsh config fragments:
 ```bash
-source .config/zsh/aliases.zsh
+zsh -n .zshrc && for f in .config/zsh/*.zsh; do zsh -n "$f"; done
 ```
 
 ## Architecture
 
-**Install flow:** `install.sh` detects macOS vs Linux → installs packages (`Brewfile`/`Aptfile`) → writes `~/.gitconfig` directly (never symlinked) → symlinks all other dotfiles into `$HOME` with timestamp backups for conflicts → sets zsh as login shell on Linux.
+**Install flow:** `install.sh` (thin orchestrator) sources `lib/*.sh` modules → detects macOS vs Linux (memoized) → parses manifests (`Brewfile`/`Aptfile`/`Pipxfile`) into a tool registry → installs packages → installs pipx packages → writes `~/.gitconfig` directly (never symlinked) → symlinks all other dotfiles into `$HOME` with timestamp backups for conflicts → sets zsh as login shell on Linux.
 
-**Shell startup order:** `.zshenv` → `.zshrc` (Zim init → PATH → aliases → zoxide → starship → tmux auto-attach).
+**lib/ modules:** `log.sh` (logging/shell helpers), `os.sh` (memoized `detect_os`), `args.sh` (flag parsing + `ensure_remote_install_allowed`), `packages_common.sh` (`parse_package_file` + `install_pipx_packages`), `tools_registry.sh` (required-tool registry, `installer_tool_present`, `verify_required_tools`), `git_config.sh` (gitconfig prompting/writing), `packages_macos.sh` (Homebrew, Skim), `packages_linux.sh` (apt, script-fallback installers), `links.sh` (symlink helpers + `link_dotfiles`).
 
-**Neovim:** `init.lua` → `lua/minhuy/init.lua` bootstraps three modules (`set.lua`, `remap.lua`, `lazy.lua`). Plugins live under `lua/minhuy/plugins/`, one file per plugin. Lazy.nvim manages loading; Mason auto-installs LSP servers on first launch.
+**Manifest annotations** (Aptfile, Brewfile, Pipxfile): `# required` — tool must be present after install; `# script-fallback` (Aptfile only) — install via official script when apt package is unavailable; `# group:latex/pdf/font` — informational grouping.
 
-**Linux package strategy:** Two-stage — apt installs from `Aptfile` first, then `SCRIPT_PRIORITY_PACKAGES` fallback installers (remote scripts from official sources) fill gaps for tools not in apt or needing newer versions (gh, eza, starship, zoxide, tailscale, kitty). Fallbacks respect `--allow-remote-install` / `--no-remote-install`.
+**Shell startup order:** `.zshenv` → `.zshrc` (sources `00-options`, `10-zim`, `20-path`, `30-aliases`, `40-tools`, `50-tmux`, `99-zoxide`). Each fragment is symlinked independently from `.config/zsh/`.
+
+**Neovim:** `init.lua` → `lua/minhuy/init.lua` bootstraps three modules (`set.lua`, `remap.lua`, `lazy.lua`). Plugins live under `lua/minhuy/plugins/`, one file per plugin (auto-imported by lazy.nvim's `{ import = "minhuy.plugins" }`). `lua/minhuy/util.lua` provides `has_exe`, `is_normal_buf`, `ft_in` helpers. Mason auto-installs LSP servers on first launch. Requires **Neovim >= 0.12**.
+
+**Linux package strategy:** Two-stage — apt installs from `Aptfile` first, then `script-fallback` packages (derived from Aptfile `# script-fallback` annotations) are installed via official scripts (gh, eza, starship, zoxide, tailscale, kitty). Fallbacks respect `--allow-remote-install` / `--no-remote-install`.
 
 **Specialized language support:**
 - SystemVerilog/Verilog: `verible-verilog-ls` (LSP), `verible-verilog-format`, `verible-verilog-lint` — Mason auto-installs Verible on first nvim launch.
-- Tcl/SDC/UPF/XDC: `tclsp` from `tclint` (installed via pipx); both activated only when binaries are on `$PATH`.
+- Tcl/SDC/UPF/XDC: `tclsp` from `tclint` (installed via pipx from `Pipxfile`); both activated only when binaries are on `$PATH`.
 
 ## Key conventions
 

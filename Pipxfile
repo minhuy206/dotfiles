@@ -1,0 +1,5 @@
+# Pipxfile: one package per line (pipx package names).
+# Annotations use the same syntax as Aptfile:
+#   required - exit non-zero if tool still missing after install
+
+tclint  # required

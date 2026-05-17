@@ -50,7 +50,13 @@ cd dotfiles
 - `.zshenv`
 - `.zimrc`
 - `.tmux.conf`
-- `.config/zsh/aliases.zsh`
+- `.config/zsh/00-options.zsh`
+- `.config/zsh/10-zim.zsh`
+- `.config/zsh/20-path.zsh`
+- `.config/zsh/30-aliases.zsh`
+- `.config/zsh/40-tools.zsh`
+- `.config/zsh/50-tmux.zsh`
+- `.config/zsh/99-zoxide.zsh`
 - `.config/nvim`
 - `.config/starship/starship.toml`
 - `.config/kitty/kitty.conf`
@@ -60,6 +66,7 @@ cd dotfiles
 - **Fonts:** macOS installs **FiraCode Nerd Font** via the Brewfile cask (`font-fira-code-nerd-font`). Linux installs plain **Fira Code** from Apt (`fonts-firacode`); install a [Nerd Font](https://www.nerdfonts.com/font-downloads) build (e.g. FiraCode Nerd Font) yourself if you want the same glyphs in the terminal and Starship.
 - Existing config files are backed up with a timestamp suffix before replacement.
 - `install.sh` only updates `user.name`, `user.email`, and `init.defaultBranch` in `~/.gitconfig`, leaving any other settings intact (it does not symlink `~/.gitconfig` from the repo).
+- **Neovim >= 0.12** is required for the LSP config (`vim.lsp.config`/`vim.lsp.enable` API).
 - On first `nvim` launch, `lazy.nvim` installs the configured plugin set.
 - On first `nvim` launch, Mason automatically installs Verible for SystemVerilog linting, formatting, and LSP support.
 - Tcl buffers use Tree-sitter highlighting and the `tclsp` language server from `tclint`.

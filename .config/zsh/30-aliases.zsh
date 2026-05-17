@@ -1,5 +1,3 @@
-# Aliases loaded from .zshrc
-
 if (( ${+commands[eza]} )); then
   alias ls="eza"
   alias la="eza -a"
