@@ -1,26 +1,17 @@
 return {
   "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  config = function()
+  opts = function()
     local function current_os()
       local sysname = (vim.uv or vim.loop).os_uname().sysname
-
-      if sysname == "Darwin" then
-        return ""
-      end
-
-      if sysname == "Linux" then
-        return ""
-      end
-
-      if sysname == "Windows_NT" then
-        return ""
-      end
-
+      if sysname == "Darwin"     then return "" end
+      if sysname == "Linux"      then return "" end
+      if sysname == "Windows_NT" then return "" end
       return sysname
     end
 
-    require("lualine").setup({
+    return {
       options = {
         theme = "modus-vivendi",
         component_separators = { left = "|", right = "|" },
@@ -34,6 +25,6 @@ return {
         lualine_y = { "progress" },
         lualine_z = { "location" },
       },
-    })
+    }
   end,
 }

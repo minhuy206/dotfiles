@@ -7,8 +7,6 @@ vim.keymap.set("n", "<leader>x", function()
   require("mini.bufremove").delete(0, false)
 end, { desc = "Delete buffer" })
 
--- Neotree focus
-vim.keymap.set("n", "<leader>o", "<cmd>Neotree focus<cr>")
 -- move line up/down (visual)
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")

@@ -2,12 +2,14 @@ return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
   config = function()
+    local util = require("minhuy.util")
     local lint = require("lint")
-    local has_verible_lint = vim.fn.executable("verible-verilog-lint") == 1
 
-    if not has_verible_lint then
+    if not util.has_exe("verible-verilog-lint") then
       return
     end
+
+    local sv_fts = { "systemverilog", "verilog" }
 
     lint.linters.verible = {
       cmd = "verible-verilog-lint",
@@ -34,9 +36,7 @@ return {
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
       group = verible_lint,
       callback = function()
-        local filetype = vim.bo.filetype
-
-        if filetype == "systemverilog" or filetype == "verilog" then
+        if util.ft_in(0, sv_fts) then
           lint.try_lint("verible")
         end
       end,

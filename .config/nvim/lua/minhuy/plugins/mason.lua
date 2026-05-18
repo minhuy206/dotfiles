@@ -1,13 +1,12 @@
 return {
   "williamboman/mason.nvim",
-  lazy = false,
+  cmd = { "Mason", "MasonInstall", "MasonUpdate" },
+  event = "VeryLazy",
   config = function()
     require("mason").setup({})
 
     local ok, registry = pcall(require, "mason-registry")
-    if not ok then
-      return
-    end
+    if not ok then return end
 
     local packages = { "verible", "texlab" }
 

@@ -1,91 +1,39 @@
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
-  dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
-  },
+  dependencies = { "hrsh7th/cmp-nvim-lsp" },
   config = function()
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    local verible_filetypes = { "systemverilog", "verilog" }
-    local verible_root_markers = { "verible.filelist", ".rules.verible_lint", ".git" }
-    local tcl_filetypes = { "sdc", "tcl", "upf", "xdc" }
-    local tcl_root_markers = { "tclint.toml", ".tclint", "pyproject.toml", ".git" }
-    local has_verible_ls = vim.fn.executable("verible-verilog-ls") == 1
-    local has_tclsp = vim.fn.executable("tclsp") == 1
+    local util = require("minhuy.util")
+    local caps = require("cmp_nvim_lsp").default_capabilities()
 
-    if vim.lsp and vim.lsp.config and vim.lsp.enable then
-      if has_verible_ls then
-        vim.lsp.config("verible", {
-          cmd = { "verible-verilog-ls" },
-          filetypes = verible_filetypes,
-          root_markers = verible_root_markers,
-          single_file_support = true,
-          capabilities = capabilities,
-        })
-        vim.lsp.enable("verible")
-      end
-
-      if has_tclsp then
-        vim.lsp.config("tclint", {
-          cmd = { "tclsp" },
-          filetypes = tcl_filetypes,
-          root_markers = tcl_root_markers,
-          single_file_support = true,
-          capabilities = capabilities,
-        })
-        vim.lsp.enable("tclint")
-      end
-
-      vim.lsp.config("texlab", {
+    local servers = {
+      texlab = {
         cmd = { "texlab" },
         filetypes = { "tex", "plaintex", "bib" },
         root_markers = { ".latexmkrc", "latexmkrc", ".git" },
-        single_file_support = true,
-        capabilities = capabilities,
-      })
-      vim.lsp.enable("texlab")
+      },
+      verible = {
+        cmd = { "verible-verilog-ls" },
+        filetypes = { "systemverilog", "verilog" },
+        root_markers = { "verible.filelist", ".rules.verible_lint", ".git" },
+        enable_if = "verible-verilog-ls",
+      },
+      tclint = {
+        cmd = { "tclsp" },
+        filetypes = { "sdc", "tcl", "upf", "xdc" },
+        root_markers = { "tclint.toml", ".tclint", "pyproject.toml", ".git" },
+        enable_if = "tclsp",
+      },
+    }
 
-      return
-    end
-
-    local lspconfig = require("lspconfig")
-    local configs = require("lspconfig.configs")
-    local util = require("lspconfig.util")
-
-    if has_verible_ls then
-      if not configs.verible then
-        configs.verible = {
-          default_config = {
-            cmd = { "verible-verilog-ls" },
-            filetypes = verible_filetypes,
-            root_dir = util.root_pattern(table.unpack(verible_root_markers)),
-            single_file_support = true,
-          },
-        }
+    for name, cfg in pairs(servers) do
+      if not cfg.enable_if or util.has_exe(cfg.enable_if) then
+        cfg.enable_if = nil
+        cfg.single_file_support = true
+        cfg.capabilities = caps
+        vim.lsp.config(name, cfg)
+        vim.lsp.enable(name)
       end
-
-      lspconfig.verible.setup({
-        capabilities = capabilities,
-      })
     end
-
-    if has_tclsp then
-      if not configs.tclint then
-        configs.tclint = {
-          default_config = {
-            cmd = { "tclsp" },
-            filetypes = tcl_filetypes,
-            root_dir = util.root_pattern(table.unpack(tcl_root_markers)),
-            single_file_support = true,
-          },
-        }
-      end
-
-      lspconfig.tclint.setup({
-        capabilities = capabilities,
-      })
-    end
-
-    lspconfig.texlab.setup({ capabilities = capabilities })
   end,
 }
