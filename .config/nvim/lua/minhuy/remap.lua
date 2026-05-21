@@ -1,4 +1,3 @@
-vim.g.mapleader = " "
 -- next / prev tab
 vim.keymap.set("n", "<Tab>", ":bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
@@ -62,22 +61,22 @@ vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- reload config
 vim.keymap.set("n", "<leader><leader>", function()
-  for name in pairs(package.loaded) do
-    if name:match("^minhuy") then
-      package.loaded[name] = nil
-    end
-  end
+  require("minhuy.reload").reload()
+end, { desc = "Reload Neovim config" })
 
-  dofile(vim.env.MYVIMRC)
-  vim.notify("Neovim config reloaded")
-end)
+vim.api.nvim_create_user_command("ConfigStatus", function()
+  require("minhuy.reload").status()
+end, { desc = "Show Neovim config load status", force = true })
 
 vim.keymap.set("n", "<leader>u", function()
   vim.cmd("packadd nvim.undotree")
   require("undotree").open({ command = "botright 30vnew" })
 end, { desc = "Open undotree on right" })
 
+local remap_group = vim.api.nvim_create_augroup("MinhuyRemap", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
+  group = remap_group,
   pattern = "markdown",
   callback = function()
     vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", {
