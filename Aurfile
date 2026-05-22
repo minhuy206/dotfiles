@@ -3,6 +3,7 @@
 # Bootstrap: yay-bin is cloned and built automatically when this file is non-empty.
 #
 # Uncomment packages as needed:
+prettier               # required
 hyprshot               # group:hypr
 wlogout                # group:hypr
 # swaylock-effects  # group:hypr  — swaylock with blur/effects

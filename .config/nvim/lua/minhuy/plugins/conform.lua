@@ -1,32 +1,42 @@
 return {
   "stevearc/conform.nvim",
   event = { "BufReadPre", "BufNewFile" },
-  config = function()
+  opts = function()
     local util = require("minhuy.util")
-    local has_verible_format = util.has_exe("verible-verilog-format")
-    local has_latexindent = util.has_exe("latexindent")
-    local formatters_by_ft = {}
+    local formatters_by_ft = {
+      json = { "prettier" },
+      jsonc = { "prettier" },
+      css = { "prettier" },
+    }
 
-    if has_verible_format then
+    if util.has_exe("stylua") then
+      formatters_by_ft.lua = { "stylua" }
+    end
+    if util.has_exe("verible-verilog-format") then
       formatters_by_ft.systemverilog = { "verible" }
       formatters_by_ft.verilog = { "verible" }
     end
-    if has_latexindent then
+    if util.has_exe("latexindent") then
       formatters_by_ft.tex = { "latexindent" }
     end
 
-    local sv_fts = { "systemverilog", "verilog" }
-
-    require("conform").setup({
+    return {
+      formatters = {
+        prettier = {
+          args = function(_, ctx)
+            local args = { "--stdin-filepath", ctx.filename }
+            if vim.bo[ctx.buf].filetype == "jsonc" then
+              vim.list_extend(args, { "--parser", "json" })
+            end
+            return args
+          end,
+        },
+      },
       formatters_by_ft = formatters_by_ft,
-      format_on_save = function(bufnr)
-        if has_verible_format and util.ft_in(bufnr, sv_fts) then
-          return { lsp_format = "never", timeout_ms = 500 }
-        end
-        if has_latexindent and util.ft_in(bufnr, { "tex" }) then
-          return { lsp_format = "never", timeout_ms = 1000 }
-        end
-      end,
-    })
+      format_on_save = {
+        timeout_ms = 1000,
+        lsp_fallback = true,
+      },
+    }
   end,
 }
