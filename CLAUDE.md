@@ -24,17 +24,21 @@ zsh -n .zshrc && for f in .config/zsh/*.zsh; do zsh -n "$f"; done
 
 ## Architecture
 
-**Install flow:** `install.sh` (thin orchestrator) sources `lib/*.sh` modules → detects macOS vs Linux (memoized) → parses manifests (`Brewfile`/`Aptfile`/`Pipxfile`) into a tool registry → installs packages → installs pipx packages → writes `~/.gitconfig` directly (never symlinked) → symlinks all other dotfiles into `$HOME` with timestamp backups for conflicts → sets zsh as login shell on Linux.
+**Install flow:** `install.sh` (thin orchestrator) sources `lib/*.sh` modules → detects OS/distro (memoized) → parses manifests (`Brewfile`/`Pacmanfile`/`Aptfile`/`Pipxfile`) into a tool registry → installs packages → installs pipx packages → writes `~/.gitconfig` directly (never symlinked) → symlinks all other dotfiles into `$HOME` with timestamp backups for conflicts → sets zsh as login shell on Linux.
 
-**lib/ modules:** `log.sh` (logging/shell helpers), `os.sh` (memoized `detect_os`), `args.sh` (flag parsing + `ensure_remote_install_allowed`), `packages_common.sh` (`parse_package_file` + `install_pipx_packages`), `tools_registry.sh` (required-tool registry, `installer_tool_present`, `verify_required_tools`), `git_config.sh` (gitconfig prompting/writing), `packages_macos.sh` (Homebrew, Skim), `packages_linux.sh` (apt, script-fallback installers), `links.sh` (symlink helpers + `link_dotfiles`).
+**lib/ modules:** `log.sh` (logging/shell helpers), `os.sh` (memoized `detect_os` — returns `macos`, `arch`, or `debian`; reads `/etc/os-release` on Linux), `args.sh` (flag parsing + `ensure_remote_install_allowed`), `packages_common.sh` (`parse_package_file` + `install_pipx_packages`), `tools_registry.sh` (required-tool registry, `installer_tool_present`, `verify_required_tools`), `git_config.sh` (gitconfig prompting/writing), `packages_macos.sh` (Homebrew), `packages_linux.sh` (apt, script-fallback installers, `set_default_login_shell`), `packages_arch.sh` (pacman, yay bootstrap, AUR installs), `links.sh` (symlink helpers + `link_dotfiles`).
 
-**Manifest annotations** (Aptfile, Brewfile, Pipxfile): `# required` — tool must be present after install; `# script-fallback` (Aptfile only) — install via official script when apt package is unavailable; `# group:latex/pdf/font` — informational grouping.
+**Manifest annotations** (Aptfile, Pacmanfile, Brewfile, Pipxfile): `# required` — tool must be present after install; `# script-fallback` (Aptfile only) — install via official script when apt package is unavailable; `# group:latex/pdf/font/hypr/audio/net` — informational grouping.
 
 **Shell startup order:** `.zshenv` → `.zshrc` (sources `00-options`, `10-zim`, `20-path`, `30-aliases`, `40-tools`, `50-tmux`, `99-zoxide`). Each fragment is symlinked independently from `.config/zsh/`.
 
 **Neovim:** `init.lua` → `lua/minhuy/init.lua` bootstraps three modules (`set.lua`, `remap.lua`, `lazy.lua`). Plugins live under `lua/minhuy/plugins/`, one file per plugin (auto-imported by lazy.nvim's `{ import = "minhuy.plugins" }`). `lua/minhuy/util.lua` provides `has_exe`, `is_normal_buf`, `ft_in` helpers. Mason auto-installs LSP servers on first launch. Requires **Neovim >= 0.12**.
 
-**Linux package strategy:** Two-stage — apt installs from `Aptfile` first, then `script-fallback` packages (derived from Aptfile `# script-fallback` annotations) are installed via official scripts (gh, eza, starship, zoxide, tailscale, kitty). Fallbacks respect `--allow-remote-install` / `--no-remote-install`.
+**Debian/Ubuntu package strategy:** Two-stage — apt installs from `Aptfile` first, then `script-fallback` packages (derived from Aptfile `# script-fallback` annotations) are installed via official scripts (gh, eza, starship, zoxide, tailscale, kitty). Fallbacks respect `--allow-remote-install` / `--no-remote-install`.
+
+**Arch Linux package strategy:** Single-stage — pacman installs everything from `Pacmanfile` (official repos cover all tools including Hyprland ecosystem). AUR packages (if any) are listed in `Aurfile`; `yay-bin` is bootstrapped automatically on first AUR install. No script-fallback layer needed.
+
+**Hyprland configs:** Starter configs live in `.config/hypr/`, `.config/waybar/`, `.config/mako/`, `.config/wofi/`. The installer symlinks them into `$HOME` only on Arch. Display manager is `ly` (installed via pacman and automatically enabled via `systemctl enable ly` by the installer).
 
 **Specialized language support:**
 - SystemVerilog/Verilog: `verible-verilog-ls` (LSP), `verible-verilog-format`, `verible-verilog-lint` — Mason auto-installs Verible on first nvim launch.

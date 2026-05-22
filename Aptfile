@@ -25,12 +25,6 @@ unzip
 wget
 zoxide                # required script-fallback
 zsh                   # required
-latexmk               # group:latex
-texlive-latex-extra   # group:latex
-texlive-fonts-recommended # group:latex
-texlive-extra-utils   # group:latex
-zathura               # group:pdf
-biber                 # group:latex
 xdotool
 ripgrep
 fd-find

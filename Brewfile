@@ -13,8 +13,6 @@ brew "tmux"                         # required
 brew "zoxide"                       # required
 
 cask "clipy"
-cask "mactex-no-gui"                # group:latex
-cask "skim"                         # group:pdf
 cask "claude-code"
 cask "codex"
 cask "gonhanh"

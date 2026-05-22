@@ -14,6 +14,7 @@ for _lib in \
   "$repo_root/lib/git_config.sh" \
   "$repo_root/lib/packages_macos.sh" \
   "$repo_root/lib/packages_linux.sh" \
+  "$repo_root/lib/packages_arch.sh" \
   "$repo_root/lib/links.sh"; do
   source "$_lib"
 done
@@ -28,8 +29,14 @@ install_packages() {
       install_homebrew_if_missing
       install_brew_bundle
       ;;
-    linux)
-      log "Linux detected: apt first for prerequisites, then script-priority tools (Homebrew disabled)."
+    arch)
+      log "Arch Linux detected: pacman for repo packages, yay for AUR."
+      install_pacman_packages
+      install_aur_packages
+      enable_ly
+      ;;
+    debian)
+      log "Debian/Ubuntu detected: apt first for prerequisites, then script-priority tools."
       install_apt_packages
       install_linux_script_tools_if_missing
       ;;
@@ -46,10 +53,6 @@ main() {
   install_packages
   install_pipx_packages
 
-  if [[ "$(detect_os)" == macos ]]; then
-    configure_skim_synctex
-  fi
-
   link_dotfiles
 
   if [[ "$skip_git_config" -eq 1 ]]; then
@@ -65,13 +68,15 @@ main() {
   log "  1. Select FiraCode Nerd Font in your terminal settings."
   log "  2. Start a new shell or run: exec zsh"
   log "  3. Open Neovim — Mason will auto-install texlab on first launch."
-  if [[ "$(detect_os)" == macos ]]; then
-    log "  4. Open a .tex file and press <localleader>ll to compile and open Skim."
-  fi
-  if [[ "$(detect_os)" == linux ]]; then
-    set_default_login_shell_linux || true
+  local _os
+  _os="$(detect_os)"
+  if [[ "$_os" == arch || "$_os" == debian ]]; then
+    set_default_login_shell || true
     log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""
     log "  4. If Nerd Font glyphs are missing, install FiraCode Nerd Font manually."
+  fi
+  if [[ "$_os" == arch ]]; then
+    log "  5. Reboot — ly will start automatically and launch Hyprland."
   fi
 
   verify_required_tools

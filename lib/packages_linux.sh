@@ -215,7 +215,7 @@ install_apt_packages() {
 
 # ── Login shell ──────────────────────────────────────────────────────────────
 
-set_default_login_shell_linux() {
+set_default_login_shell() {
   local current_login_shell zsh_path
 
   zsh_path="$(command -v zsh || true)"

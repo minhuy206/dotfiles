@@ -48,4 +48,15 @@ link_dotfiles() {
   link_file "$repo_root/.config/nvim"               "$home_dir/.config/nvim"
   link_file "$repo_root/.config/starship/starship.toml" "$home_dir/.config/starship/starship.toml"
   link_file "$repo_root/.config/kitty/kitty.conf"   "$home_dir/.config/kitty/kitty.conf"
+
+  if [[ "$(detect_os)" == arch ]]; then
+    link_file "$repo_root/.config/hypr/hyprland.conf"            "$home_dir/.config/hypr/hyprland.conf"
+    link_file "$repo_root/.config/hypr/hyprland.lua"             "$home_dir/.config/hypr/hyprland.lua"
+    link_file "$repo_root/.config/hypr/hyprpaper.conf"           "$home_dir/.config/hypr/hyprpaper.conf"
+    link_file "$repo_root/.config/hypr/hypridle.conf"            "$home_dir/.config/hypr/hypridle.conf"
+    link_file "$repo_root/.config/waybar/config.jsonc"           "$home_dir/.config/waybar/config.jsonc"
+    link_file "$repo_root/.config/waybar/style.css"              "$home_dir/.config/waybar/style.css"
+    link_file "$repo_root/.config/mako/config"                   "$home_dir/.config/mako/config"
+    link_file "$repo_root/.config/rofi/config.rasi"              "$home_dir/.config/rofi/config.rasi"
+  fi
 }

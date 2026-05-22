@@ -15,10 +15,12 @@ _array_add_unique() {
 # Maps apt/Brewfile package names to canonical binary names
 _canonical_tool() {
   case "$1" in
-    neovim)  printf '%s' nvim ;;
-    batcat)  printf '%s' bat ;;
-    fd-find) printf '%s' fd ;;
-    *)       printf '%s' "$1" ;;
+    neovim)      printf '%s' nvim ;;
+    batcat)      printf '%s' bat ;;
+    fd-find)     printf '%s' fd ;;
+    github-cli)  printf '%s' gh ;;
+    python-pipx) printf '%s' pipx ;;
+    *)           printf '%s' "$1" ;;
   esac
 }
 
@@ -60,11 +62,11 @@ init_required_tools() {
 
   local os
   os="$(detect_os)"
-  if [[ "$os" == macos ]]; then
-    parse_package_file "$repo_root/Brewfile" _register_tool_callback
-  else
-    parse_package_file "$repo_root/Aptfile" _register_tool_callback
-  fi
+  case "$os" in
+    macos)  parse_package_file "$repo_root/Brewfile"   _register_tool_callback ;;
+    arch)   parse_package_file "$repo_root/Pacmanfile" _register_tool_callback ;;
+    *)      parse_package_file "$repo_root/Aptfile"    _register_tool_callback ;;
+  esac
   parse_package_file "$repo_root/Pipxfile" _register_tool_callback
 }
 

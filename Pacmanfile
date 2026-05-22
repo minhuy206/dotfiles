@@ -1,0 +1,69 @@
+# Pacmanfile: one package per line (pacman package names).
+# Annotations after '#' on a line control install.sh behavior:
+#   required       - exit non-zero if tool still missing after install
+#   group:<name>   - informational grouping
+
+# Core CLI
+curl                          # required
+wget
+git                           # required
+zsh                           # required
+tmux                          # required
+neovim                        # required
+kitty                         # required
+github-cli                    # required
+starship                      # required
+zoxide                        # required
+eza
+fd
+bat
+ripgrep
+lazygit
+unzip
+cmake
+python-pipx                   # required
+tailscale
+xdotool
+
+# Fonts
+ttf-firacode-nerd             # group:font
+
+# Hyprland + Wayland session
+hyprland                      # required group:hypr
+hyprpaper                     # group:hypr
+hyprlock                      # group:hypr
+hypridle                      # group:hypr
+hyprpolkitagent               # group:hypr
+xdg-desktop-portal-hyprland   # group:hypr
+waybar                        # group:hypr
+mako                          # group:hypr
+rofi                          # group:hypr
+grim                          # group:hypr
+slurp                         # group:hypr
+wl-clipboard                  # group:hypr
+qt5-wayland                   # group:hypr
+qt6-wayland                   # group:hypr
+brightnessctl                 # group:hypr
+playerctl                     # group:hypr
+pavucontrol                   # group:hypr
+xdg-user-dirs                 # group:hypr
+ly                            # group:hypr
+
+# Media
+nemo                          # group:media
+imv                           # group:media
+mpv                           # group:media
+
+# Audio
+pipewire                      # group:audio
+pipewire-pulse                # group:audio
+wireplumber                   # group:audio
+
+# Network
+networkmanager                # group:net
+network-manager-applet        # group:net
+
+# Bluetooth
+bluez                         # group:bt
+bluez-utils                   # group:bt
+blueman                       # group:bt
