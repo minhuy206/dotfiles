@@ -36,7 +36,7 @@ zsh -n .zshrc && for f in .config/zsh/*.zsh; do zsh -n "$f"; done
 
 **Arch Linux package strategy:** Single-stage — pacman installs everything from `Pacmanfile` (official repos cover all tools including Hyprland ecosystem). AUR packages (if any) are listed in `Aurfile`; `yay-bin` is bootstrapped automatically on first AUR install.
 
-**Hyprland configs:** Starter configs live in `.config/hypr/`, `.config/waybar/`, `.config/mako/`, `.config/wofi/`. The installer symlinks them into `$HOME` only on Arch. Display manager is `ly` (installed via pacman and automatically enabled via `systemctl enable ly` by the installer).
+**Hyprland configs:** Starter configs live in `.config/hypr/`, `.config/waybar/`, `.config/mako/`, `.config/wofi/`. The installer symlinks them into `$HOME` only on Arch. Display manager is `ly` (installed via pacman and automatically enabled via `systemctl enable ly` by the installer). The Hyprland config is split into `~/.config/hypr/modules/*.lua` modules `require()`d from `hyprland.lua` — edit the relevant module, not the top-level entry point.
 
 **Specialized language support:**
 - SystemVerilog/Verilog: `verible-verilog-ls` (LSP), `verible-verilog-format`, `verible-verilog-lint` — Mason auto-installs Verible on first nvim launch.

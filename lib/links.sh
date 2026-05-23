@@ -50,8 +50,9 @@ link_dotfiles() {
   link_file "$repo_root/.config/kitty/kitty.conf"   "$home_dir/.config/kitty/kitty.conf"
 
   if [[ "$(detect_os)" == arch ]]; then
-    link_file "$repo_root/.config/hypr/hyprland.conf"            "$home_dir/.config/hypr/hyprland.conf"
+    link_file "$repo_root/wallpapers"                             "$home_dir/wallpapers"
     link_file "$repo_root/.config/hypr/hyprland.lua"             "$home_dir/.config/hypr/hyprland.lua"
+    link_file "$repo_root/.config/hypr/modules"                  "$home_dir/.config/hypr/modules"
     link_file "$repo_root/.config/hypr/hyprpaper.conf"           "$home_dir/.config/hypr/hyprpaper.conf"
     link_file "$repo_root/.config/hypr/hypridle.conf"            "$home_dir/.config/hypr/hypridle.conf"
     link_file "$repo_root/.config/waybar/config.jsonc"           "$home_dir/.config/waybar/config.jsonc"
