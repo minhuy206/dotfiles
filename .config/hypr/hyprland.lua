@@ -52,6 +52,9 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("waybar")
 	hl.exec_cmd("systemctl --user start hyprpolkitagent")
 	hl.exec_cmd("hyprctl setcursor Bibata-Modern-Ice 30")
+	hl.exec_cmd("hypridle")
+	hl.exec_cmd("hyprpaper")
+	hl.exec_cmd("mako")
 end)
 
 -------------------------------
@@ -268,9 +271,12 @@ hl.bind(secondMod .. " + SPACE", hl.dsp.exec_cmd(runner))
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 
+local _sh = io.popen("command -v hyprshutdown 2>/dev/null")
+local _has_hyprshutdown = _sh and _sh:read("*a"):match("%S")
+if _sh then _sh:close() end
 hl.bind(
 	secondMod .. " + M",
-	hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")
+	_has_hyprshutdown and hl.dsp.exec_cmd("hyprshutdown") or hl.dsp.exit()
 )
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(launcher))

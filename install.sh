@@ -13,7 +13,6 @@ for _lib in \
   "$repo_root/lib/tools_registry.sh" \
   "$repo_root/lib/git_config.sh" \
   "$repo_root/lib/packages_macos.sh" \
-  "$repo_root/lib/packages_linux.sh" \
   "$repo_root/lib/packages_arch.sh" \
   "$repo_root/lib/links.sh"; do
   source "$_lib"
@@ -34,11 +33,6 @@ install_packages() {
       install_pacman_packages
       install_aur_packages
       enable_ly
-      ;;
-    debian)
-      log "Debian/Ubuntu detected: apt first for prerequisites, then script-priority tools."
-      install_apt_packages
-      install_linux_script_tools_if_missing
       ;;
     *)
       log "Unsupported OS: ${OSTYPE:-unknown}"
@@ -70,12 +64,10 @@ main() {
   log "  3. Open Neovim — Mason will auto-install texlab on first launch."
   local _os
   _os="$(detect_os)"
-  if [[ "$_os" == arch || "$_os" == debian ]]; then
+  if [[ "$_os" == arch ]]; then
     set_default_login_shell || true
     log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""
     log "  4. If Nerd Font glyphs are missing, install FiraCode Nerd Font manually."
-  fi
-  if [[ "$_os" == arch ]]; then
     log "  5. Reboot — ly will start automatically and launch Hyprland."
   fi
 

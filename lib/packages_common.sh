@@ -1,6 +1,6 @@
 # parse_package_file <file> <callback>
 # For each non-comment package line, calls: callback <package> [annotation ...]
-# Handles Aptfile/Pipxfile format (package [# annotation ...])
+# Handles Pacmanfile/Aurfile/Pipxfile format (package [# annotation ...])
 # and Brewfile format (brew "package" [# annotation ...] / cask "package" [# annotation ...])
 parse_package_file() {
   local file="$1"

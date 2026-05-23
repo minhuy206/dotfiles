@@ -107,3 +107,42 @@ install_aur_packages() {
   log "Installing AUR packages via yay: ${_AUR_PACKAGES[*]}"
   yay -S --needed --noconfirm "${_AUR_PACKAGES[@]}"
 }
+
+# ── Login shell ──────────────────────────────────────────────────────────────
+
+set_default_login_shell() {
+  local current_login_shell zsh_path
+
+  zsh_path="$(command -v zsh || true)"
+  if [[ -z "$zsh_path" ]]; then
+    log "Skipping login shell update: zsh is not installed."
+    return 1
+  fi
+
+  current_login_shell="$(getent passwd "${USER:-}" 2>/dev/null | awk -F: '{print $7}')"
+  if [[ -n "$current_login_shell" && "$current_login_shell" == "$zsh_path" ]]; then
+    log "ok  login shell already set to zsh ($zsh_path)"
+    return 0
+  fi
+
+  if ! have_command chsh; then
+    log "Skipping login shell update: chsh is not available."
+    return 1
+  fi
+
+  if ! grep -Fxq "$zsh_path" /etc/shells 2>/dev/null; then
+    log "Skipping login shell update: $zsh_path is not listed in /etc/shells."
+    log "Add it to /etc/shells, then run: chsh -s \"$zsh_path\""
+    return 1
+  fi
+
+  log "Setting zsh as default login shell (you may be prompted for your password)"
+  if chsh -s "$zsh_path"; then
+    log "ok  login shell updated to zsh ($zsh_path)"
+    return 0
+  fi
+
+  log "Could not update login shell automatically."
+  log "Run manually: chsh -s \"$zsh_path\""
+  return 1
+}

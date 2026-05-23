@@ -20,7 +20,7 @@ _detect_linux_distro() {
       return
       ;;
   esac
-  printf '%s' debian
+  printf '%s' unknown
 }
 
 detect_os() {
