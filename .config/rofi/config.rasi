@@ -1,7 +1,8 @@
 configuration {
 	modi:                       "drun";
     show-icons:                 true;
-    display-drun:               "";
+    display-drun:               "󰍉";
+    display-run:                "";
 	drun-display-format:        "{name}";
   timeout {
       action: "kb-cancel";
@@ -65,8 +66,12 @@ inputbar {
 
 prompt {
     enabled:                     true;
+    font:                        "Iosevka Nerd Font 14";
+    expand:                      false;
     background-color:            inherit;
     text-color:                  inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
 }
 textbox-prompt-colon {
     enabled:                     true;
@@ -82,6 +87,7 @@ entry {
     cursor:                      text;
     placeholder:                 "Search...";
     placeholder-color:           inherit;
+    vertical-align:              0.5;
 }
 
 /*****----- Listview -----*****/
@@ -132,9 +138,37 @@ element normal.normal {
     background-color:            @background;
     text-color:                  @foreground;
 }
+element normal.urgent {
+    background-color:            @urgent;
+    text-color:                  @background;
+}
+element normal.active {
+    background-color:            @active;
+    text-color:                  @background;
+}
 element selected.normal {
     background-color:            @background-alt;
     text-color:                  @foreground;
+}
+element selected.urgent {
+    background-color:            @urgent;
+    text-color:                  @background;
+}
+element selected.active {
+    background-color:            @active;
+    text-color:                  @background;
+}
+element alternate.normal {
+    background-color:            @background;
+    text-color:                  @foreground;
+}
+element alternate.urgent {
+    background-color:            @urgent;
+    text-color:                  @background;
+}
+element alternate.active {
+    background-color:            @active;
+    text-color:                  @background;
 }
 element-icon {
     background-color:            transparent;

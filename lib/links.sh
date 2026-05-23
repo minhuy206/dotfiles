@@ -60,5 +60,8 @@ link_dotfiles() {
     link_file "$repo_root/.config/waybar/scripts/launch.sh"     "$home_dir/.config/waybar/scripts/launch.sh"
     link_file "$repo_root/.config/mako/config"                   "$home_dir/.config/mako/config"
     link_file "$repo_root/.config/rofi/config.rasi"              "$home_dir/.config/rofi/config.rasi"
+    link_file "$repo_root/.config/rofi/colors.rasi"              "$home_dir/.config/rofi/colors.rasi"
+    link_file "$repo_root/.config/rofi/fonts.rasi"               "$home_dir/.config/rofi/fonts.rasi"
+    link_file "$repo_root/.config/rofi/colors/onedark.rasi"      "$home_dir/.config/rofi/colors/onedark.rasi"
   fi
 }
