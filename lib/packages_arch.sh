@@ -87,6 +87,15 @@ enable_ly() {
   sudo_if_needed systemctl enable ly
 }
 
+enable_bluetooth() {
+  if ! have_command bluetoothctl; then
+    log "bluetoothctl not found after install; skipping systemd enable for bluetooth"
+    return 0
+  fi
+  log "Enabling bluetooth service (systemctl enable bluetooth)"
+  sudo_if_needed systemctl enable bluetooth
+}
+
 install_aur_packages() {
   local aurfile="$repo_root/Aurfile"
   _AUR_PACKAGES=()

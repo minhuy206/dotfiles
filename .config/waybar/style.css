@@ -70,9 +70,11 @@ tooltip label {
 
 #battery,
 #pulseaudio,
+#bluetooth,
 #network,
 #clock,
-#custom-notification {
+#custom-notification,
+#custom-arch {
   background-color: @bg0;
   padding: 0 15px 0 15px;
   margin: 0 0 0 12px;
@@ -84,12 +86,32 @@ tooltip label {
   color: @blue;
 }
 
+#custom-arch {
+  color: @fg;
+  padding: 0 14px;
+  margin: 0 0 0 12px;
+  font-size: 18px;
+}
+
 #pulseaudio {
   color: @yellow;
+}
+
+#pulseaudio.muted {
+  color: @red;
+  font-size: 20px;
 }
 #custom-notification {
   color: @fg;
   margin: 0 12px 0 12px;
+}
+
+#bluetooth {
+  color: @aqua;
+}
+
+#bluetooth.disabled {
+  color: @grey0;
 }
 
 #network {

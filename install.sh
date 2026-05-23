@@ -33,6 +33,7 @@ install_packages() {
       install_pacman_packages
       install_aur_packages
       enable_ly
+      enable_bluetooth
       ;;
     *)
       log "Unsupported OS: ${OSTYPE:-unknown}"
