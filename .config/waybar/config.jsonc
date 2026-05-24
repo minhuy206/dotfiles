@@ -70,8 +70,8 @@
   "battery": {
     "interval": 60,
     "states": {
-      "warning": 30,
-      "critical": 15
+      "warning": 50,
+      "critical": 20
     },
     "format": "{icon}",
     "format-icons": ["", "", "", "", ""],
