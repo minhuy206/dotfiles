@@ -55,6 +55,7 @@ link_dotfiles() {
     link_file "$repo_root/.config/hypr/modules"                  "$home_dir/.config/hypr/modules"
     link_file "$repo_root/.config/hypr/hyprpaper.conf"           "$home_dir/.config/hypr/hyprpaper.conf"
     link_file "$repo_root/.config/hypr/hypridle.conf"            "$home_dir/.config/hypr/hypridle.conf"
+    link_file "$repo_root/.config/hypr/hyprlock.conf"            "$home_dir/.config/hypr/hyprlock.conf"
     link_file "$repo_root/.config/waybar/config.jsonc"           "$home_dir/.config/waybar/config.jsonc"
     link_file "$repo_root/.config/waybar/style.css"             "$home_dir/.config/waybar/style.css"
     link_file "$repo_root/.config/waybar/colors/one-dark.css"   "$home_dir/.config/waybar/colors/one-dark.css"

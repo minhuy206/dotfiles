@@ -11,3 +11,6 @@ export NVM_DIR="$HOME/.nvm"
 if [[ "$OSTYPE" == darwin* ]]; then
   export PATH="/Applications/ServBay/package/node/25/25.9.0/bin:$PATH"
 fi
+
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"

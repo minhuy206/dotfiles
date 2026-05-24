@@ -3,7 +3,7 @@ local secondMod = "SUPER + SHIFT"
 
 local terminal = "kitty"
 local fileManager = "nemo"
-local browser = "chromium"
+local browser = "zen-browser"
 local launcher = "rofi -show drun -show-icons"
 local runner = "rofi -show run"
 
@@ -21,6 +21,9 @@ hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(secondMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(secondMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
+
+-- Lock
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Exit
 local _sh = io.popen("command -v hyprshutdown 2>/dev/null")
