@@ -22,9 +22,6 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(secondMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(secondMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
--- Lock
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
-
 -- Exit
 local _sh = io.popen("command -v hyprshutdown 2>/dev/null")
 local _has_hyprshutdown = _sh and _sh:read("*a"):match("%S")

@@ -4,6 +4,7 @@
 #
 # Uncomment packages as needed:
 prettier               # required
+ttf-geist-mono-nerd    # group:font
 hyprshot               # group:hypr
 wlogout                # group:hypr
 # swaylock-effects  # group:hypr  — swaylock with blur/effects

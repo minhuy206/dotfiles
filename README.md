@@ -62,7 +62,7 @@ cd dotfiles
 
 ## Notes
 
-- **Fonts:** macOS installs **FiraCode Nerd Font** via the Brewfile cask (`font-fira-code-nerd-font`). Arch Linux installs **FiraCode Nerd Font** via pacman (`ttf-firacode-nerd` from Pacmanfile).
+- **Fonts:** macOS installs **JetBrainsMono Nerd Font** via the Brewfile cask (`font-jetbrains-mono-nerd-font`). Arch Linux installs **JetBrainsMono Nerd Font** via pacman (`ttf-jetbrains-mono-nerd` from Pacmanfile).
 - Existing config files are backed up with a timestamp suffix before replacement.
 - `install.sh` only updates `user.name`, `user.email`, and `init.defaultBranch` in `~/.gitconfig`, leaving any other settings intact (it does not symlink `~/.gitconfig` from the repo).
 - **Neovim >= 0.12** is required for the LSP config (`vim.lsp.config`/`vim.lsp.enable` API).

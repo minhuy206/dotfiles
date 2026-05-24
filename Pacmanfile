@@ -21,13 +21,14 @@ ripgrep
 lazygit
 unzip
 cmake
+tree-sitter-cli
 python-pipx                   # required
 tailscale
 xdotool
 
 # Fonts
-ttf-firacode-nerd             # group:font
 ttf-jetbrains-mono-nerd       # group:font
+otf-geist-mono-nerd           # group:font
 
 # Hyprland + Wayland session
 hyprland                      # required group:hypr
@@ -48,6 +49,8 @@ brightnessctl                 # group:hypr
 playerctl                     # group:hypr
 pavucontrol                   # group:hypr
 xdg-user-dirs                 # group:hypr
+nwg-look                      # group:hypr
+adw-gtk-theme                 # group:hypr
 ly                            # group:hypr
 
 # Media

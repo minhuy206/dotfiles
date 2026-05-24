@@ -60,7 +60,7 @@ main() {
   log ""
   log "Installed dotfiles from: $repo_root"
   log "Next steps:"
-  log "  1. Select FiraCode Nerd Font in your terminal settings."
+  log "  1. Select JetBrainsMono Nerd Font in your terminal settings."
   log "  2. Start a new shell or run: exec zsh"
   log "  3. Open Neovim — Mason will auto-install texlab on first launch."
   local _os
@@ -68,7 +68,7 @@ main() {
   if [[ "$_os" == arch ]]; then
     set_default_login_shell || true
     log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""
-    log "  4. If Nerd Font glyphs are missing, install FiraCode Nerd Font manually."
+    log "  4. If Nerd Font glyphs are missing, install JetBrainsMono Nerd Font manually."
     log "  5. Reboot — ly will start automatically and launch Hyprland."
   fi
 
