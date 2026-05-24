@@ -35,7 +35,9 @@ install_pacman_packages() {
     log "Installing pacman packages"
     sudo_if_needed pacman -S --needed --noconfirm "${_PACMAN_PACKAGES[@]}"
   fi
-  ((${#_PACMAN_SKIPPED[@]})) && log "Skipped packages unavailable in current pacman repos: ${_PACMAN_SKIPPED[*]}"
+  if ((${#_PACMAN_SKIPPED[@]})); then
+    log "Skipped packages unavailable in current pacman repos: ${_PACMAN_SKIPPED[*]}"
+  fi
 }
 
 # ── AUR via yay ────────────────────────────────────────────────────────────
