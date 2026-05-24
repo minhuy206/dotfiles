@@ -27,6 +27,7 @@ xdotool
 
 # Fonts
 ttf-firacode-nerd             # group:font
+ttf-jetbrains-mono-nerd       # group:font
 
 # Hyprland + Wayland session
 hyprland                      # required group:hypr

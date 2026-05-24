@@ -17,5 +17,6 @@ cask "claude-code"
 cask "codex"
 cask "gonhanh"
 cask "font-fira-code-nerd-font"     # group:font
+cask "font-jetbrains-mono-nerd-font" # group:font
 cask "kitty"                        # required
 cask "visual-studio-code"
