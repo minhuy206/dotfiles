@@ -17,3 +17,6 @@ if [[ -d "${DOTFILES_DIR:-$HOME/dotfiles}/.git" ]]; then
     command git -C "${DOTFILES_DIR:-$HOME/dotfiles}" "$@"
   }
 fi
+
+# EDA tools
+alias xcelium='source ~/EDA/cadence/xcelium/XCELIUM1803.sh'

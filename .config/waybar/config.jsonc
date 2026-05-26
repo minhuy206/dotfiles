@@ -26,8 +26,7 @@
   },
   "custom/arch": {
     "format": "",
-    "tooltip": false,
-    "on-click": "wlogout"
+    "tooltip": false
   },
   "pulseaudio": {
     "format": "{volume}% {icon}",

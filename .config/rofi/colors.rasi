@@ -1,1 +1,8 @@
-@import "~/.config/rofi/colors/onedark.rasi"
+* {
+    background:     #1a1b1cFF;
+    background-alt: #2a2b2cFF;
+    foreground:     #e3e3e3FF;
+    selected:       #8a8b8cFF;
+    active:         #a3bda3FF;
+    urgent:         #e08282FF;
+}

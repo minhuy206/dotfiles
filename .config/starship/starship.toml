@@ -20,7 +20,7 @@ $character"""
 
 add_newline = true
 scan_timeout = 50
-palette = 'nord'
+palette = 'monochrome_wave'
 
 [directory]
 style = 'bold fg:dark_blue'
@@ -87,7 +87,7 @@ format = '[$symbol($profile )(\[$duration\] )]($style)'
 
 [docker_context]
 symbol = ' '
-style = 'fg:#06969A'
+style = 'fg:aqua'
 format = '[$symbol]($style) $path'
 detect_files = ['docker-compose.yml', 'docker-compose.yaml', 'Dockerfile']
 
@@ -127,3 +127,17 @@ yellow='#e5c07b'
 gray='#828997'
 white ='#abb2bf'
 black='#2c323c'
+
+[palettes.monochrome_wave]
+dark_blue = '#9cb6d2'
+blue = '#9cb6d2'
+teal = '#a8ded7'
+aqua = '#a8ded7'
+red = '#e08282'
+orange = '#ece1be'
+green = '#a3bda3'
+yellow = '#ece1be'
+purple = '#cda8d6'
+gray = '#8a8b8c'
+black = '#1a1b1c'
+white = '#ffffff'

@@ -1,0 +1,1 @@
+require("minhuy.theme").apply()

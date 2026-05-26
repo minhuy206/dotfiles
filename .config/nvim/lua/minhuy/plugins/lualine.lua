@@ -13,7 +13,7 @@ return {
 
     return {
       options = {
-        theme = "modus-vivendi",
+        theme = require("minhuy.theme").lualine_theme(),
         component_separators = { left = "|", right = "|" },
         section_separators = { left = "", right = "" },
       },
