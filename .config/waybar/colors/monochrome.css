@@ -1,0 +1,21 @@
+/* Monochrome + Subtle Accents based on dr15.jpg */
+@define-color bg0 #1a1a1a; /* Darkest wave */
+@define-color bg1 #2e2e2e; /* Module background */
+@define-color bg2 #4d4d4d;
+@define-color bg3 #6b6b6b;
+@define-color bg4 #8a8a8a;
+
+/* Desaturated accents for usability */
+@define-color red    #b56d6d; /* Critical battery, muted audio */
+@define-color orange #b5906d; /* Battery warning */
+@define-color yellow #b5ad6d; /* Pulseaudio */
+@define-color green  #7a9c7a; /* Normal battery */
+@define-color aqua   #6d9cb5; /* Bluetooth */
+@define-color blue   #6d8bb5; /* Clock, active workspace */
+@define-color purple #906db5; /* Network */
+
+@define-color fg #d4d4d4; /* Text color */
+
+@define-color grey0 #666666;
+@define-color grey1 #888888;
+@define-color grey2 #aaaaaa;

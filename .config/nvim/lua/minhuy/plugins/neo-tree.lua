@@ -1,6 +1,19 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
+  init = function()
+    local group = vim.api.nvim_create_augroup("MinhuyNeoTreeStartup", { clear = true })
+
+    vim.api.nvim_create_autocmd("VimEnter", {
+      group = group,
+      once = true,
+      callback = function()
+        if vim.fn.argc() == 0 then
+          vim.cmd("Neotree source=filesystem position=current")
+        end
+      end,
+    })
+  end,
   cmd = "Neotree",
   keys = {
     { "<leader>e", "<cmd>Neotree toggle<CR>",  noremap = true, silent = true, desc = "Toggle Neo-tree" },

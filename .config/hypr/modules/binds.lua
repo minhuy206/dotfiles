@@ -4,6 +4,7 @@ local secondMod = "SUPER + SHIFT"
 local terminal = "kitty"
 local fileManager = "nemo"
 local browser = "zen-browser"
+local mail = "thunderbird"
 local launcher = "rofi -show drun -show-icons"
 local runner = "rofi -show run"
 
@@ -12,6 +13,7 @@ hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(mail))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher))
 hl.bind(secondMod .. " + SPACE", hl.dsp.exec_cmd(runner))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(launcher))

@@ -3,7 +3,7 @@
   "margin-top": 15,
   "modules-left": ["custom/arch"],
   "modules-center": ["clock", "hyprland/workspaces"],
-  "modules-right": ["pulseaudio", "bluetooth", "network", "battery", "custom/notification"],
+  "modules-right": ["pulseaudio", "bluetooth", "network", "custom/notification", "battery"],
   "clock": {
     "interval": 60,
     "format": "{:%H:%M}",

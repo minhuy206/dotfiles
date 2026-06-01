@@ -1,4 +1,4 @@
-@import "colors/one-dark.css";
+@import "colors/monochrome.css";
 
 * {
   border: none;
@@ -120,6 +120,7 @@ tooltip label {
 
 #battery {
   color: @green;
+  margin: 0 12px 0 12px;
 }
 
 #battery.warning {

@@ -58,7 +58,7 @@ inputbar {
     padding:                     15px;
     border:                      0px 0px 1px 0px;
     border-radius:               0px;
-    border-color:                @selected;
+    border-color:                @foreground;
     background-color:            @background;
     text-color:                  @foreground;
     children:                    [ "prompt", "entry" ];
