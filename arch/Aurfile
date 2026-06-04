@@ -1,0 +1,10 @@
+# Aurfile: AUR packages installed via yay. One per line.
+# Same annotation grammar as Pacmanfile (# required, # group:*).
+# Bootstrap: yay-bin is cloned and built automatically when this file is non-empty.
+#
+# Uncomment packages as needed:
+prettier               # required
+ttf-geist-mono-nerd    # group:font
+hyprshot               # group:hypr
+hyprmoncfg             # required group:hypr
+# swaylock-effects  # group:hypr  — swaylock with blur/effects

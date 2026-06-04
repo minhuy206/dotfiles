@@ -1,52 +1,67 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working in this repository.
 
 ## Commands
 
-Syntax-check all installer files without running them:
+Syntax-check installer scripts:
+
 ```bash
-bash -n install.sh && for f in lib/*.sh; do bash -n "$f"; done
+bash -n install.sh scripts/install-macos.sh scripts/install-arch.sh scripts/lib/*.sh
 ```
 
-Run the installer (interactive, prompts for git config):
+Validate zsh config:
+
+```bash
+zsh -n shared/zsh/zshrc
+for f in shared/zsh/config/*.zsh macos/zsh/*.zsh; do zsh -n "$f"; done
+```
+
+Run installers:
+
 ```bash
 ./install.sh
-./install.sh --skip-git-config
-./install.sh --no-remote-install
-./install.sh --git-name "Name" --git-email "email" --git-default-branch main
-```
-
-Validate zsh config fragments:
-```bash
-zsh -n .zshrc && for f in .config/zsh/*.zsh; do zsh -n "$f"; done
+./scripts/install-macos.sh --skip-git-config
+./scripts/install-arch.sh --no-remote-install
 ```
 
 ## Architecture
 
-**Install flow:** `install.sh` (thin orchestrator) sources `lib/*.sh` modules → detects OS/distro (memoized) → parses manifests (`Brewfile`/`Pacmanfile`/`Aurfile`/`Pipxfile`) into a tool registry → installs packages → installs pipx packages → writes `~/.gitconfig` directly (never symlinked) → symlinks all other dotfiles into `$HOME` with timestamp backups for conflicts → sets zsh as login shell on Arch.
+`install.sh` is a thin OS-detecting wrapper that delegates to `scripts/install-macos.sh` or `scripts/install-arch.sh`.
 
-**lib/ modules:** `log.sh` (logging/shell helpers), `os.sh` (memoized `detect_os` — returns `macos`, `arch`, or `unknown`; reads `/etc/os-release` on Linux), `args.sh` (flag parsing + `ensure_remote_install_allowed`), `packages_common.sh` (`parse_package_file` + `install_pipx_packages`), `tools_registry.sh` (required-tool registry, `installer_tool_present`, `verify_required_tools`), `git_config.sh` (gitconfig prompting/writing), `packages_macos.sh` (Homebrew), `packages_arch.sh` (pacman, yay bootstrap, AUR installs, `set_default_login_shell`), `links.sh` (symlink helpers + `link_dotfiles`).
+Installer helpers live in `scripts/lib/`:
 
-**Manifest annotations** (Pacmanfile, Aurfile, Brewfile, Pipxfile): `# required` — tool must be present after install; `# group:latex/pdf/font/hypr/audio/net` — informational grouping.
+- `log.sh`, `os.sh`, `args.sh`: shell helpers, OS detection, option parsing
+- `packages_common.sh`, `packages_macos.sh`, `packages_arch.sh`: manifest parsing and package installation
+- `tools_registry.sh`: required-tool collection and verification
+- `git_config.sh`: generated `~/.gitconfig` updates
+- `symlink.sh`: conservative symlink helpers and platform link sets
+- `install_flow.sh`: shared install-flow helpers
 
-**Shell startup order:** `.zshenv` → `.zshrc` (sources `00-options`, `10-zim`, `20-path`, `30-aliases`, `40-tools`, `50-tmux`, `99-zoxide`). Each fragment is symlinked independently from `.config/zsh/`.
+Config layout:
 
-**Neovim:** `init.lua` → `lua/minhuy/init.lua` bootstraps three modules (`set.lua`, `remap.lua`, `lazy.lua`). Plugins live under `lua/minhuy/plugins/`, one file per plugin (auto-imported by lazy.nvim's `{ import = "minhuy.plugins" }`). `lua/minhuy/util.lua` provides `has_exe`, `is_normal_buf`, `ft_in` helpers. Mason auto-installs LSP servers on first launch. Requires **Neovim >= 0.12**.
+- `shared/`: OS-independent terminal/dev-tool config for zsh, tmux, Neovim, Starship, Kitty, and pipx tools
+- `macos/`: Homebrew manifest and macOS-only zsh overlays
+- `arch/`: pacman/AUR manifests plus Hyprland/Wayland configs, wallpapers, and related services/configs
 
-**Arch Linux package strategy:** Single-stage — pacman installs everything from `Pacmanfile` (official repos cover all tools including Hyprland ecosystem). AUR packages (if any) are listed in `Aurfile`; `yay-bin` is bootstrapped automatically on first AUR install.
+Manifest locations:
 
-**Hyprland configs:** Starter configs live in `.config/hypr/`, `.config/waybar/`, `.config/mako/`, `.config/wofi/`. The installer symlinks them into `$HOME` only on Arch. Display manager is `ly` (installed via pacman and automatically enabled via `systemctl enable ly` by the installer). The Hyprland config is split into `~/.config/hypr/modules/*.lua` modules `require()`d from `hyprland.lua` — edit the relevant module, not the top-level entry point.
+- `macos/Brewfile`
+- `arch/Pacmanfile`
+- `arch/Aurfile`
+- `shared/Pipxfile`
 
-**Specialized language support:**
-- SystemVerilog/Verilog: `verible-verilog-ls` (LSP), `verible-verilog-format`, `verible-verilog-lint` — Mason auto-installs Verible on first nvim launch.
-- Tcl/SDC/UPF/XDC: `tclsp` from `tclint` (installed via pipx from `Pipxfile`); both activated only when binaries are on `$PATH`.
+## Key Conventions
 
-## Key conventions
+- Keep shell scripts in strict mode (`set -euo pipefail`) where applicable.
+- Existing destination files, directories, and conflicting symlinks must be timestamp-backed up before replacement.
+- `~/.gitconfig` is generated/updated by the installer and must not be symlinked from this repo.
+- Shared configs must not depend on Hyprland, Wayland, or macOS-only tools unless guarded or moved into the platform tree.
+- `~/.config/hypr` should remain a real directory so generated monitor files can coexist with symlinked Hyprland config.
+- Guard shell tool setup with command checks, for example `(( ${+commands[zoxide]} ))`.
 
-- `install.sh` must stay in strict mode (`set -euo pipefail`) with function-based structure.
-- `~/.gitconfig` is generated by the installer (from prompts or flags), never symlinked from the repo.
-- In shell configs, guard every tool-specific init with a command-existence check: `(( ${+commands[tool]} ))`.
-- Existing files are timestamp-backed before replacement — do not change this conservative behavior.
-- Neovim leader key is `Space`. Buffer nav: `Tab`/`Shift-Tab`. File explorer: `<leader>o`. Buffer close: `<leader>x`.
-- Auto-tmux attachment on interactive zsh can be suppressed with `DISABLE_AUTO_TMUX=1`.
+## Neovim
+
+Neovim config lives in `shared/nvim/`. `init.lua` loads `lua/minhuy/init.lua`, which bootstraps settings, remaps, and lazy.nvim. Plugin specs live under `shared/nvim/lua/minhuy/plugins/`.
+
+Neovim requires version 0.12 or newer for the configured LSP APIs.

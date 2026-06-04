@@ -1,17 +1,43 @@
 # dotfiles
 
-Personal dotfiles for setting up a consistent terminal environment on **macOS** and **Linux**.
+Personal dotfiles for macOS and Arch Linux, split by platform so shared terminal/dev-tool config stays reusable without pulling in Hyprland-only files.
 
-## What this repo manages
+## Repository Structure
 
-- Shell setup: `zsh`, Zim modules, aliases
-- Prompt and navigation: `starship`, `zoxide`
-- Terminal + tooling config: `kitty`, `tmux`, `git`, `neovim`
-- Package installation:
-  - macOS via `Brewfile` (Homebrew)
-  - Arch Linux via `Pacmanfile` (pacman) + `Aurfile` (yay/AUR)
+```text
+dotfiles/
+├── install.sh                  # OS-detecting wrapper
+├── scripts/
+│   ├── install-macos.sh
+│   ├── install-arch.sh
+│   └── lib/                    # installer helpers
+├── shared/
+│   ├── nvim/
+│   ├── starship/
+│   ├── kitty/
+│   ├── tmux/
+│   ├── zsh/
+│   └── Pipxfile
+├── macos/
+│   ├── Brewfile
+│   └── zsh/
+└── arch/
+    ├── Pacmanfile
+    ├── Aurfile
+    ├── hypr/
+    ├── hyprpaper/
+    ├── hypridle/
+    ├── hyprlock/
+    ├── hyprmoncfg/
+    ├── waybar/
+    ├── rofi/
+    ├── mako/
+    └── wallpapers/
+```
 
-## Quick start
+## Install
+
+Clone the repo, then run either the wrapper or the platform-specific installer:
 
 ```bash
 git clone https://github.com/minhuy206/dotfiles.git
@@ -19,56 +45,71 @@ cd dotfiles
 ./install.sh
 ```
 
-## Installer options
+macOS:
+
+```bash
+./scripts/install-macos.sh
+```
+
+Arch Linux:
+
+```bash
+./scripts/install-arch.sh
+```
+
+Common options:
 
 ```bash
 ./install.sh --help
 ./install.sh --no-remote-install
-./install.sh --allow-remote-install
 ./install.sh --skip-git-config
 ./install.sh --git-name "Your Name" --git-email "you@example.com" --git-default-branch main
 ```
 
-- `--no-remote-install` disables remote installer scripts (affects Homebrew on macOS and the yay-bin bootstrap on Arch).
-- `--allow-remote-install` is the default behavior.
-- `--skip-git-config` skips git identity/default branch prompts and leaves `~/.gitconfig` untouched.
-- `--git-name`, `--git-email`, and `--git-default-branch` override git identity/default branch values set in `~/.gitconfig`.
-- If git options are missing and the installer is run interactively, it prompts for the missing values with detected defaults.
+`--no-remote-install` disables remote installer scripts such as Homebrew bootstrap and yay-bin bootstrap. `--skip-git-config` leaves `~/.gitconfig` untouched.
 
-## What `install.sh` does
+## What Gets Linked
 
-1. Detects OS (`macOS` or `Arch Linux`)
-2. Installs packages (`brew bundle` on macOS; `pacman` + `yay` on Arch)
-3. Prompts for (or accepts flags for) git name/email/default branch, then updates `user.name`, `user.email`, and `init.defaultBranch` in `~/.gitconfig` unless `--skip-git-config` is used
-4. Symlinks dotfiles into `$HOME` (with backup for existing files)
-5. On Arch, attempts to set `zsh` as login shell
+Shared configs are linked on both macOS and Arch:
 
-## Managed files
+- zsh: `~/.zshenv`, `~/.zshrc`, `~/.zimrc`, and `~/.config/zsh/*.zsh`
+- tmux: `~/.tmux.conf`
+- Neovim: `~/.config/nvim`
+- Starship: `~/.config/starship/starship.toml`
+- Kitty: `~/.config/kitty/kitty.conf`
 
-- `.zshrc`
-- `.zshenv`
-- `.zimrc`
-- `.tmux.conf`
-- `.config/zsh/00-options.zsh`
-- `.config/zsh/10-zim.zsh`
-- `.config/zsh/20-path.zsh`
-- `.config/zsh/30-aliases.zsh`
-- `.config/zsh/40-tools.zsh`
-- `.config/zsh/50-tmux.zsh`
-- `.config/zsh/99-zoxide.zsh`
-- `.config/nvim`
-- `.config/starship/starship.toml`
-- `.config/kitty/kitty.conf`
+macOS additionally links `macos/zsh/25-servbay.zsh` into `~/.config/zsh/`.
 
-## Notes
+Arch additionally links Hyprland, Hyprpaper, Hypridle, Hyprlock, Hyprmoncfg, Waybar, Rofi, Mako, and wallpapers. `~/.config/hypr` remains a real directory so generated files such as `~/.config/hypr/monitors.lua` can coexist with symlinked repo files.
 
-- **Fonts:** macOS installs **JetBrainsMono Nerd Font** via the Brewfile cask (`font-jetbrains-mono-nerd-font`). Arch Linux installs **JetBrainsMono Nerd Font** via pacman (`ttf-jetbrains-mono-nerd` from Pacmanfile).
-- Existing config files are backed up with a timestamp suffix before replacement.
-- `install.sh` only updates `user.name`, `user.email`, and `init.defaultBranch` in `~/.gitconfig`, leaving any other settings intact (it does not symlink `~/.gitconfig` from the repo).
-- **Neovim >= 0.12** is required for the LSP config (`vim.lsp.config`/`vim.lsp.enable` API).
-- On first `nvim` launch, `lazy.nvim` installs the configured plugin set.
-- On first `nvim` launch, Mason automatically installs Verible for SystemVerilog linting, formatting, and LSP support.
-- Tcl buffers use Tree-sitter highlighting and the `tclsp` language server from `tclint`.
-- Neovim wires up **Verible** and **tclsp** (`tclint`) when `verible-verilog-ls` and `tclsp` are on your PATH (see `lazy.nvim` LSP plugin config).
-- SystemVerilog/Verilog buffers use `verible-verilog-ls`, `verible-verilog-format`, and `verible-verilog-lint` through Neovim.
-- Interactive `zsh` shells auto-attach/start `tmux` session `main` when available. Set `DISABLE_AUTO_TMUX=1` to skip it.
+Existing target files, directories, and conflicting symlinks are backed up with a timestamp suffix before replacement.
+
+## Package Manifests
+
+- macOS packages: `macos/Brewfile`
+- Arch repo packages: `arch/Pacmanfile`
+- Arch AUR packages: `arch/Aurfile`
+- Shared pipx tools: `shared/Pipxfile`
+
+Manifest annotations such as `# required` are used by the installer to verify required tools after installation.
+
+## Git Config
+
+The installer updates selected global git keys directly in `~/.gitconfig`: `user.name`, `user.email`, and `init.defaultBranch`. The repo no longer tracks or symlinks a `.gitconfig` file.
+
+## What Changed
+
+- Root `.config/` content was split into `shared/`, `macos/`, and `arch/`.
+- `install.sh` became a compatibility wrapper; platform setup now lives in `scripts/install-macos.sh` and `scripts/install-arch.sh`.
+- Installer helpers moved to `scripts/lib/`.
+- Package manifests moved next to the platform that uses them.
+- Hyprpaper wallpaper paths no longer hardcode the repo checkout path.
+- Safe symlink handling now backs up conflicting symlinks as well as files/directories.
+
+## Validation
+
+```bash
+bash -n install.sh scripts/install-macos.sh scripts/install-arch.sh scripts/lib/*.sh
+zsh -n shared/zsh/zshrc
+for f in shared/zsh/config/*.zsh macos/zsh/*.zsh; do zsh -n "$f"; done
+```

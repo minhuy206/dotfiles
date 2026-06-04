@@ -1,40 +1,32 @@
 # Copilot Instructions
 
-## Build, test, and lint commands
+## Build, Test, And Lint Commands
 
-This repository has no formal build/test/lint pipeline. Use installer/script checks:
-
-```bash
-./install.sh --help
-bash -n install.sh
-```
-
-Single-file shell config check:
+This repository has no formal build pipeline. Use syntax checks:
 
 ```bash
-source .config/zsh/aliases.zsh
+bash -n install.sh scripts/install-macos.sh scripts/install-arch.sh scripts/lib/*.sh
+zsh -n shared/zsh/zshrc
+for f in shared/zsh/config/*.zsh macos/zsh/*.zsh; do zsh -n "$f"; done
 ```
 
-## High-level architecture
+## High-Level Architecture
 
-- `install.sh` is the orchestrator:
-  - detects OS
-  - installs packages (`Brewfile` on macOS, `Pacmanfile`/`Aurfile` on Arch Linux)
-  - collects git identity/default branch (prompts only for values not passed via CLI overrides)
-  - writes `~/.gitconfig`
-  - links config files into `$HOME`
-- Runtime behavior is split across:
-  - `.zshrc` (bootstrap + conditional initialization)
-  - `.zimrc` (Zim module ordering/plugins)
-  - `.config/zsh/aliases.zsh` (tool-aware aliases)
-  - `.config/starship/starship.toml`, `.config/kitty/kitty.conf`, `.tmux.conf`
+- `install.sh` detects the OS and delegates to the matching platform installer.
+- `scripts/install-macos.sh` installs Homebrew packages, shared pipx tools, shared configs, macOS zsh overlays, and generated git config.
+- `scripts/install-arch.sh` installs pacman/AUR packages, shared pipx tools, shared configs, Arch Hyprland/Wayland configs, services, and generated git config.
+- Shared reusable helpers live in `scripts/lib/`.
 
-Cross-file flow: package install -> git config generation -> symlink dotfiles -> shell startup loads linked files and only enables features for installed binaries.
+Config roots:
 
-## Key conventions
+- `shared/`: zsh, tmux, Neovim, Starship, Kitty, and shared pipx tools
+- `macos/`: `Brewfile` and macOS-only zsh fragments
+- `arch/`: `Pacmanfile`, `Aurfile`, Hyprland, Waybar, Rofi, Mako, Hyprmoncfg, and wallpapers
 
-- Keep `install.sh` in strict mode (`set -euo pipefail`) and function-based structure.
-- Remote script installs (Homebrew on macOS, yay-bin bootstrap on Arch) must respect `--allow-remote-install` / `--no-remote-install`.
-- Dotfile replacement behavior is conservative: existing files are timestamp-backed up before replacement.
-- `~/.gitconfig` is **generated** during install (from prompts/flags), not symlinked from repository state.
-- In shell configs, always guard tool-specific setup with command-existence checks (e.g. `(( ${+commands[tool]} ))`).
+## Key Conventions
+
+- Remote script installs must respect `--allow-remote-install` and `--no-remote-install`.
+- Dotfile replacement behavior is conservative: existing targets are timestamp-backed up before replacement.
+- `~/.gitconfig` is generated during install from prompts or flags, never symlinked.
+- Keep shared configs OS-independent; move platform-specific setup into `macos/` or `arch/`.
+- In shell configs, guard tool-specific setup with command-existence checks.

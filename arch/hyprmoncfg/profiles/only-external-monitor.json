@@ -1,0 +1,81 @@
+{
+  "name": "only-external-monitor",
+  "created_at": "2026-06-03T07:41:44.58295791Z",
+  "updated_at": "2026-06-04T00:00:00Z",
+  "outputs": [
+    {
+      "key": "lg electronics|lg ultrafine|206ntbk14189",
+      "match_key": "lg electronics|lg ultrafine|206ntbk14189",
+      "name": "DP-3",
+      "make": "LG Electronics",
+      "model": "LG ULTRAFINE",
+      "serial": "206NTBK14189",
+      "enabled": true,
+      "mode": "3840x2160@60.00Hz",
+      "width": 3840,
+      "height": 2160,
+      "refresh": 60,
+      "x": -2560,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 16,
+      "cm": "dcip3",
+      "sdr_brightness": 2.5,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "california institute of technology|0x1411",
+      "match_key": "california institute of technology|0x1411",
+      "name": "eDP-1",
+      "make": "California Institute of Technology",
+      "model": "0x1411",
+      "enabled": false,
+      "mode": "3840x2400@60.00Hz",
+      "width": 3840,
+      "height": 2400,
+      "refresh": 60,
+      "x": 2560,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": true,
+    "strategy": "manual",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "lg electronics|lg ultrafine|206ntbk14189",
+      "california institute of technology|0x1411"
+    ],
+    "rules": [
+      {
+        "workspace": "1",
+        "output_key": "california institute of technology|0x1411",
+        "output_name": "eDP-1",
+        "default": true,
+        "persistent": true
+      },
+      {
+        "workspace": "4",
+        "output_key": "lg electronics|lg ultrafine|206ntbk14189",
+        "output_name": "DP-3",
+        "default": true,
+        "persistent": true
+      }
+    ]
+  },
+  "exec": ""
+}

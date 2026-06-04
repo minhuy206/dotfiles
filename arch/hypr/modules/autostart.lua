@@ -1,0 +1,8 @@
+hl.on("hyprland.start", function()
+	hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP XDG_SESSION_TYPE")
+	hl.exec_cmd("hyprpaper")
+	hl.exec_cmd("waybar")
+	hl.exec_cmd("systemctl --user start hyprpolkitagent")
+	hl.exec_cmd("systemctl --user start hypridle.service")
+	hl.exec_cmd("mako")
+end)

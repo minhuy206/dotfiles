@@ -3,76 +3,43 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-home_dir="${HOME}"
 
-for _lib in \
-  "$repo_root/lib/log.sh" \
-  "$repo_root/lib/os.sh" \
-  "$repo_root/lib/args.sh" \
-  "$repo_root/lib/packages_common.sh" \
-  "$repo_root/lib/tools_registry.sh" \
-  "$repo_root/lib/git_config.sh" \
-  "$repo_root/lib/packages_macos.sh" \
-  "$repo_root/lib/packages_arch.sh" \
-  "$repo_root/lib/links.sh"; do
-  source "$_lib"
-done
-unset _lib
+source "$repo_root/scripts/lib/log.sh"
+source "$repo_root/scripts/lib/os.sh"
 
-install_packages() {
+print_wrapper_usage() {
+  cat <<'EOF'
+Usage: ./install.sh [options]
+
+Delegates to the platform-specific installer for the detected OS:
+  macOS:      ./scripts/install-macos.sh
+  Arch Linux: ./scripts/install-arch.sh
+
+Run a platform installer with --help to see supported options.
+EOF
+}
+
+main() {
   local os
   os="$(detect_os)"
 
   case "$os" in
     macos)
-      install_homebrew_if_missing
-      install_brew_bundle
+      exec "$repo_root/scripts/install-macos.sh" "$@"
       ;;
     arch)
-      log "Arch Linux detected: pacman for repo packages, yay for AUR."
-      install_pacman_packages
-      install_aur_packages
-      enable_ly
-      enable_bluetooth
+      exec "$repo_root/scripts/install-arch.sh" "$@"
       ;;
     *)
+      if (($# > 0)) && [[ "$1" == "-h" || "$1" == "--help" ]]; then
+        print_wrapper_usage
+        exit 0
+      fi
       log "Unsupported OS: ${OSTYPE:-unknown}"
+      print_wrapper_usage
       exit 1
       ;;
   esac
-}
-
-main() {
-  parse_args "$@"
-  init_required_tools
-  install_packages
-  install_pipx_packages
-
-  link_dotfiles
-
-  if [[ "$skip_git_config" -eq 1 ]]; then
-    log "Skipping ~/.gitconfig setup (--skip-git-config)."
-  else
-    collect_git_config_values
-    update_gitconfig
-  fi
-
-  log ""
-  log "Installed dotfiles from: $repo_root"
-  log "Next steps:"
-  log "  1. Select JetBrainsMono Nerd Font in your terminal settings."
-  log "  2. Start a new shell or run: exec zsh"
-  log "  3. Open Neovim — Mason will auto-install texlab on first launch."
-  local _os
-  _os="$(detect_os)"
-  if [[ "$_os" == arch ]]; then
-    set_default_login_shell || true
-    log "  3. If zsh is still not your login shell, run: chsh -s \"$(command -v zsh)\""
-    log "  4. If Nerd Font glyphs are missing, install JetBrainsMono Nerd Font manually."
-    log "  5. Reboot — ly will start automatically and launch Hyprland."
-  fi
-
-  verify_required_tools
 }
 
 main "$@"
