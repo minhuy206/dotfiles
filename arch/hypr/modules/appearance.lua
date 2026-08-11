@@ -42,6 +42,10 @@ hl.config({
 		disable_hyprland_logo = false,
 	},
 
+	xwayland = {
+		force_zero_scaling = true,
+	},
+
 	dwindle = {
 		preserve_split = true,
 	},

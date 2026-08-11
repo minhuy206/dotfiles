@@ -15,6 +15,8 @@ hl.config({
 		touchpad = {
 			natural_scroll = true,
 			drag_3fg      = 1,
+            -- tap_and_drag = false,
+            -- clickfinger_behavior = true
 		},
 	},
 })

@@ -7,7 +7,6 @@ if monitors then
 	monitors:close()
 	require("monitors")
 end
-require("modules.env")
 require("modules.autostart")
 require("modules.input")
 require("modules.appearance")
