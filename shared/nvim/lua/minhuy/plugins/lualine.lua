@@ -13,7 +13,7 @@ return {
 
     return {
       options = {
-        theme = require("minhuy.theme").lualine_theme(),
+        theme = "rose-pine",
         component_separators = { left = "|", right = "|" },
         section_separators = { left = "", right = "" },
       },

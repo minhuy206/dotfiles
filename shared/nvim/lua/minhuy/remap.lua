@@ -1,10 +1,12 @@
 -- next / prev tab
 vim.keymap.set("n", "<Tab>", ":bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", ":bprev<CR>")
--- close buffer (mini.bufremove)
-vim.keymap.set("n", "<leader>x", function()
-  require("mini.bufremove").delete(0, false)
-end, { desc = "Delete buffer" })
+
+-- close buffer, prompting to save unsaved changes
+vim.keymap.set("n", "<leader>x", "<cmd>confirm bdelete<CR>", { desc = "Close buffer" })
+
+-- file explorer
+vim.keymap.set("n", "<leader>e", "<cmd>Ex<CR>", { desc = "Open file explorer" })
 
 -- move line up/down (visual)
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")

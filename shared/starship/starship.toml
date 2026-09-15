@@ -20,10 +20,15 @@ $character"""
 
 add_newline = true
 scan_timeout = 50
-palette = 'monochrome_wave'
+palette = 'rose_pine'
+
+[character]
+success_symbol = '[❯](bold rose)'
+error_symbol = '[❯](bold red)'
+vimcmd_symbol = '[❮](bold purple)'
 
 [directory]
-style = 'bold fg:dark_blue'
+style = 'bold fg:blue'
 format = '[$path ]($style)'
 truncation_length = 3
 truncation_symbol = '…/'
@@ -36,12 +41,12 @@ truncate_to_repo = false
 'Pictures' = ' '
 
 [git_branch]
-style = 'fg:green'
+style = 'fg:purple'
 symbol = ' '
 format = '[on](white) [$symbol$branch ]($style)'
 
 [git_status]
-style = 'fg:green'
+style = 'fg:yellow'
 format = '([$all_status$ahead_behind]($style) )'
 
 [fill]
@@ -141,3 +146,18 @@ purple = '#906db5'
 gray = '#6b6b6b'
 black = '#1a1a1a'
 white = '#d4d4d4'
+
+[palettes.rose_pine]
+dark_blue = '#9ccfd8'
+blue = '#9ccfd8'
+teal = '#31748f'
+aqua = '#9ccfd8'
+red = '#eb6f92'
+orange = '#f6c177'
+green = '#9ccfd8'
+yellow = '#f6c177'
+purple = '#c4a7e7'
+rose = '#ebbcba'
+gray = '#908caa'
+black = '#191724'
+white = '#e0def4'

@@ -68,6 +68,8 @@ link_shared_configs() {
   link_path "$repo_root/shared/nvim" "$home_dir/.config/nvim"
   link_path "$repo_root/shared/starship/starship.toml" "$home_dir/.config/starship/starship.toml"
   link_path "$repo_root/shared/kitty/kitty.conf" "$home_dir/.config/kitty/kitty.conf"
+  link_path "$repo_root/shared/kitty/macos.conf" "$home_dir/.config/kitty/macos.conf"
+  link_path "$repo_root/shared/kitty/linux.conf" "$home_dir/.config/kitty/linux.conf"
 }
 
 link_macos_configs() {

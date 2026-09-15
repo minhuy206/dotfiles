@@ -39,6 +39,24 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false
 
+-- Neovim 0.12's underline handler uses strict line indexing before clamping
+-- diagnostics. A stale diagnostic can therefore abort BufReadPost on file open.
+if vim.version().major == 0 and vim.version().minor == 12 then
+  local underline = vim.diagnostic.handlers.underline
+
+  vim.diagnostic.handlers.underline = {
+    show = function(namespace, bufnr, diagnostics, opts)
+      local line_count = vim.api.nvim_buf_line_count(bufnr)
+      local valid_diagnostics = vim.tbl_filter(function(diagnostic)
+        return diagnostic.lnum >= 0 and diagnostic.lnum < line_count
+      end, diagnostics)
+
+      underline.show(namespace, bufnr, valid_diagnostics, opts)
+    end,
+    hide = underline.hide,
+  }
+end
+
 local restore_cursor = vim.api.nvim_create_augroup("RestoreCursorPosition", { clear = true })
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = restore_cursor,

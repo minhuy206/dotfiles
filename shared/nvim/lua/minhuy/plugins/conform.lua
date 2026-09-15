@@ -33,10 +33,14 @@ return {
         },
       },
       formatters_by_ft = formatters_by_ft,
-      format_on_save = {
-        timeout_ms = 1000,
-        lsp_fallback = true,
-      },
+      format_on_save = function(bufnr)
+        local tex_fts = { tex = true, plaintex = true }
+        local ft = vim.bo[bufnr].filetype
+        return {
+          timeout_ms = tex_fts[ft] and 5000 or 1000,
+          lsp_fallback = true,
+        }
+      end,
     }
   end,
 }

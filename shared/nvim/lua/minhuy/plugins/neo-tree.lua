@@ -1,36 +1,16 @@
-local function focus_file_window()
-  local current_win = vim.api.nvim_get_current_win()
-  local previous_win = vim.fn.win_getid(vim.fn.winnr("#"))
-
-  if previous_win ~= 0 and vim.api.nvim_win_is_valid(previous_win) then
-    local previous_buf = vim.api.nvim_win_get_buf(previous_win)
-    if vim.bo[previous_buf].filetype ~= "neo-tree" then
-      vim.api.nvim_set_current_win(previous_win)
-      return
-    end
-  end
-
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    local is_normal_window = vim.api.nvim_win_get_config(win).relative == ""
-
-    if win ~= current_win and is_normal_window and vim.bo[buf].filetype ~= "neo-tree" then
-      vim.api.nvim_set_current_win(win)
-      return
-    end
-  end
-end
-
 local function toggle_neotree_focus()
   if vim.bo.filetype == "neo-tree" then
-    focus_file_window()
+    require("neo-tree.command").execute({
+      action = "close",
+      position = "current",
+    })
     return
   end
 
   require("neo-tree.command").execute({
     action = "focus",
     source = "filesystem",
-    position = "left",
+    position = "current",
   })
 end
 
@@ -111,8 +91,7 @@ return {
       },
     },
     window = {
-      position = "left",
-      width = 25,
+      position = "current",
       mapping_options = {
         noremap = true,
         nowait = true,
