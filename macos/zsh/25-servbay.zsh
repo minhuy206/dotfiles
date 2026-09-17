@@ -1,4 +1,10 @@
 if [[ "$OSTYPE" == darwin* ]]; then
+  # Prefer system tools (especially Git) over ServBay's bundled binaries.
+  # Keep ServBay-only commands available as fallbacks.
+  if (( ${path[(Ie)/Applications/ServBay/bin]} )); then
+    path=("${(@)path:#/Applications/ServBay/bin}" /Applications/ServBay/bin)
+  fi
+
   servbay_python_bin="/Applications/ServBay/package/python/current/Python.framework/Versions/Current/bin"
   servbay_node_bin="/Applications/ServBay/package/node/25/25.9.0/bin"
 

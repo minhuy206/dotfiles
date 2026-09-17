@@ -20,7 +20,7 @@ $character"""
 
 add_newline = true
 scan_timeout = 50
-palette = 'rose_pine'
+palette = 'catppuccin_mocha'
 
 [character]
 success_symbol = '[❯](bold rose)'
@@ -147,17 +147,17 @@ gray = '#6b6b6b'
 black = '#1a1a1a'
 white = '#d4d4d4'
 
-[palettes.rose_pine]
-dark_blue = '#9ccfd8'
-blue = '#9ccfd8'
-teal = '#31748f'
-aqua = '#9ccfd8'
-red = '#eb6f92'
-orange = '#f6c177'
-green = '#9ccfd8'
-yellow = '#f6c177'
-purple = '#c4a7e7'
-rose = '#ebbcba'
-gray = '#908caa'
-black = '#191724'
-white = '#e0def4'
+[palettes.catppuccin_mocha]
+dark_blue = '#89b4fa'
+blue = '#89b4fa'
+teal = '#94e2d5'
+aqua = '#89dceb'
+red = '#f38ba8'
+orange = '#fab387'
+green = '#a6e3a1'
+yellow = '#f9e2af'
+purple = '#cba6f7'
+rose = '#f5c2e7'
+gray = '#a6adc8'
+black = '#1e1e2e'
+white = '#cdd6f4'

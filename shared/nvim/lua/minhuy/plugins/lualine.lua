@@ -13,7 +13,7 @@ return {
 
     return {
       options = {
-        theme = "rose-pine",
+        theme = "catppuccin-nvim",
         component_separators = { left = "|", right = "|" },
         section_separators = { left = "", right = "" },
       },
